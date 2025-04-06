@@ -1,0 +1,22 @@
+name: ProfilePlugin
+version: 1.0
+main: com.tamraz.profileplugin.ProfilePlugin
+author: tamraz
+api-version: 1.21
+depend: [LuckPerms, PlaceholderAPI]
+commands:
+  profile:
+    description: Открывает профиль игрока
+    usage: /profile [игрок]
+  profileplugin:
+    description: Управление плагином ProfilePlugin
+    usage: /profileplugin <reload>
+    permission: profileplugin.admin
+  setprofiletitle:
+    description: Устанавливает название профиля
+    usage: /<command> <title>
+
+permissions:
+  profileplugin.admin:
+    description: Доступ к административным командам
+    default: op

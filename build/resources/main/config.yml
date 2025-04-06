@@ -1,0 +1,43 @@
+gui:
+  size: 54
+  items:
+    1:
+      material: PLAYER_HEAD
+      head_owner: "%player_name%"
+      display_name: "&a%player_name%"
+      lore:
+        - "&6Время игры: &f%cmi_user_playtime_hoursf% &7час."
+        - "&6Ранг: &7%luckperms_prefix%"
+    2:
+      material: DIAMOND_PICKAXE
+      display_name: "&5Добыча"
+      lore:
+        - "&7Блоков добыто: %statistic_mine_block%"
+    3:
+      material: STONE
+      display_name: "&eИнфа"
+      lore:
+        - "&7Здоровье: &c%player_health%"
+    53:
+      material: ARROW
+      display_name: "&eОткрыть меню"
+      lore:
+        - "&7Нажмите, чтобы открыть меню!"
+      command: "[console] dm open menu {player}"
+      cooldown: 5
+      sound: "ENTITY_ITEM_PICKUP"
+    52:
+      material: BARRIER
+      display_name: "&cЗакрыть"
+      lore:
+        - "&7Нажмите, чтобы закрыть профиль!"
+      close: true
+      sound: "BLOCK_NOTE_BLOCK_PLING"
+
+  player_items:
+    helmet: 10
+    chestplate: 11
+    leggings: 12
+    boots: 13
+    main_hand: 19
+    off_hand: 20
