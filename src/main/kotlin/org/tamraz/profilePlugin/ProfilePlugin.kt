@@ -56,12 +56,25 @@ class ProfilePlugin : JavaPlugin() {
     }
 
     fun translateColors(text: String): String {
-        var result = ChatColor.translateAlternateColorCodes('&', text)
-        val pattern = Regex("&#([A-Fa-f0-9]{6})")
-        result = pattern.replace(result) { match ->
+        logger.info("Processing text: $text")
+
+        // Сначала обрабатываем HEX коды
+        var result = text
+        val hexPattern = Regex("&#([A-Fa-f0-9]{6})")
+
+        result = hexPattern.replace(result) { match ->
             val hex = match.groupValues[1]
-            "§x" + hex.chunked(2).joinToString("") { "§${it.lowercase()}" }
+            logger.info("Found HEX color: #$hex")
+
+            // Правильный формат для Minecraft 1.16+
+            val chars = hex.toCharArray()
+            "§x§${chars[0]}§${chars[1]}§${chars[2]}§${chars[3]}§${chars[4]}§${chars[5]}"
         }
+
+        // Затем обрабатываем стандартные цветовые коды
+        result = ChatColor.translateAlternateColorCodes('&', result)
+        logger.info("Final result: $result")
+
         return result
     }
 }
