@@ -11,11 +11,13 @@ gui:
         - "&#E2ADFDВремя игры: &f%cmi_user_playtime_hoursf% &7час."
         - "&#ACD45BРанг: &7%luckperms_prefix%"
         - "&#ACD45BИмечко: &7%flectonepulse_player% &%flectonepulse_fcolor_1%БЛА"
+      update: true
     2:
       material: DIAMOND_PICKAXE
       display_name: "&5Добыча"
       lore:
         - "&7Блоков добыто: %statistic_mine_block%"
+      update: true
     3:
       material: STONE
       display_name: "&eИнфа"
@@ -23,6 +25,7 @@ gui:
         - "&7Здоровье: &c%player_health%"
         - "&aЛайки: &f%profile_like%"
         - "&cДизлайки: &f%profile_dislike%"
+      update: true
     4:
       material: EMERALD
       display_name: "&aПоставить лайк"
@@ -31,6 +34,7 @@ gui:
       command: "[player] like {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      update: false
     5:
       material: REDSTONE
       display_name: "&cПоставить дизлайк"
@@ -39,6 +43,7 @@ gui:
       command: "[player] dislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      update: false
     6:
       material: EMERALD_BLOCK
       display_name: "&aУбрать лайк"
@@ -47,6 +52,7 @@ gui:
       command: "[player] unlike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      update: false
     7:
       material: REDSTONE_BLOCK
       display_name: "&cУбрать дизлайк"
@@ -55,6 +61,7 @@ gui:
       command: "[player] undislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      update: false
     53:
       material: ARROW
       display_name: "&eОткрыть меню"
@@ -63,6 +70,7 @@ gui:
       command: "[console] dm open menu {player}"
       cooldown: 5
       sound: "ENTITY_ITEM_PICKUP"
+      update: false
     52:
       material: BARRIER
       display_name: "&cЗакрыть"
@@ -70,6 +78,7 @@ gui:
         - "&7Нажмите, чтобы закрыть профиль!"
       close: true
       sound: "BLOCK_NOTE_BLOCK_PLING"
+      update: false
 
   player_items:
     helmet: 10

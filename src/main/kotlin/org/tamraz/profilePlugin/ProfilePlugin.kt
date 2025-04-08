@@ -6,6 +6,8 @@ import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import org.bukkit.ChatColor
+import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitRunnable
 
 class ProfilePlugin : JavaPlugin() {
 
@@ -14,6 +16,8 @@ class ProfilePlugin : JavaPlugin() {
 
     lateinit var messages: YamlConfiguration
         private set
+
+    private val activeProfiles = mutableMapOf<org.bukkit.entity.Player, ProfileGUI>()
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -28,17 +32,62 @@ class ProfilePlugin : JavaPlugin() {
         getCommand("undislike")?.setExecutor(UnratingCommand(this, false))
         Bukkit.getPluginManager().registerEvents(InventoryClickListener(this), this)
 
-        // Регистрируем плейсхолдеры
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             ProfilePlaceholderExpansion(this).register()
         }
+
+        startGuiUpdateTask()
 
         logger.info("ProfilePlugin успешно запущен!")
     }
 
     override fun onDisable() {
         database.close()
+        activeProfiles.clear()
         logger.info("ProfilePlugin отключен!")
+    }
+
+    private fun startGuiUpdateTask() {
+        object : BukkitRunnable() {
+            override fun run() {
+                if (activeProfiles.isEmpty()) return
+
+                // Асинхронно обновляем данные
+                object : BukkitRunnable() {
+                    override fun run() {
+                        val updates = mutableMapOf<org.bukkit.entity.Player, Map<Int, ItemStack>>()
+                        for ((player, gui) in activeProfiles.entries.toList()) {
+                            if (!player.isOnline || player.openInventory.topInventory.holder !is ProfileInventoryHolder) {
+                                activeProfiles.remove(player)
+                                continue
+                            }
+                            val updatedItems = gui.getUpdatedItems()
+                            updates[player] = updatedItems
+                        }
+
+                        // Синхронно обновляем инвентарь
+                        object : BukkitRunnable() {
+                            override fun run() {
+                                for ((player, items) in updates) {
+                                    val inventory = player.openInventory.topInventory
+                                    for ((slot, item) in items) {
+                                        inventory.setItem(slot, item)
+                                    }
+                                }
+                            }
+                        }.runTask(this@ProfilePlugin)
+                    }
+                }.runTaskAsynchronously(this@ProfilePlugin)
+            }
+        }.runTaskTimer(this, 0L, 100L) // Каждые 5 секунд (100 тиков)
+    }
+
+    fun addActiveProfile(player: org.bukkit.entity.Player, gui: ProfileGUI) {
+        activeProfiles[player] = gui
+    }
+
+    fun removeActiveProfile(player: org.bukkit.entity.Player) {
+        activeProfiles.remove(player)
     }
 
     fun setPlaceholders(player: org.bukkit.OfflinePlayer, text: String): String {
@@ -66,21 +115,16 @@ class ProfilePlugin : JavaPlugin() {
     }
 
     fun translateColors(text: String): String {
-        // Сначала обрабатываем HEX коды
         var result = text
         val hexPattern = Regex("&#([A-Fa-f0-9]{6})")
 
         result = hexPattern.replace(result) { match ->
             val hex = match.groupValues[1]
-
-            // Правильный формат для Minecraft 1.16+
             val chars = hex.toCharArray()
             "§x§${chars[0]}§${chars[1]}§${chars[2]}§${chars[3]}§${chars[4]}§${chars[5]}"
         }
 
-        // Затем обрабатываем стандартные цветовые коды
         result = ChatColor.translateAlternateColorCodes('&', result)
-
         return result
     }
 }

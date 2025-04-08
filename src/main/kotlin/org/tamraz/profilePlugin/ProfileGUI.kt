@@ -14,10 +14,8 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
     private lateinit var inventory: org.bukkit.inventory.Inventory
 
     private fun createInventory() {
-        val holder = ProfileInventoryHolder(target) // Передаём target
-        // Получаем title из базы данных, если null — используем значение из конфига
+        val holder = ProfileInventoryHolder(target)
         val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "&eПрофиль %player_name%")!!
-        // Применяем плейсхолдеры и цветовые коды
         val titleWithPlaceholders = plugin.setPlaceholders(target, rawTitle)
         val title = plugin.translateColors(titleWithPlaceholders)
         inventory = Bukkit.createInventory(
@@ -25,7 +23,7 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
             plugin.config.getInt("gui.size"),
             title
         )
-        holder.setInventory(inventory) // Устанавливаем инвентарь в holder
+        holder.setInventory(inventory)
         loadItems()
         loadPlayerItems()
     }
@@ -43,14 +41,12 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
             itemsSection.getString("$key.display_name")?.let {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
                 val translated = plugin.translateColors(withPlaceholders)
-                // Добавляем §r в начало, если строка не начинается с цветового кода
                 val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
                 meta.setDisplayName(finalDisplayName)
             }
             itemsSection.getStringList("$key.lore").map {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
                 val translated = plugin.translateColors(withPlaceholders)
-                // Добавляем §r в начало каждой строки, если она не начинается с цветового кода
                 if (translated.startsWith("§")) translated else "§r$translated"
             }.let {
                 if (it.isNotEmpty()) meta.lore = it
@@ -60,26 +56,22 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
                 (meta as SkullMeta).owningPlayer = target
             }
 
-            // Сохраняем команду в PersistentDataContainer предмета
             itemsSection.getString("$key.command")?.let { command ->
                 val pdc = meta.persistentDataContainer
                 pdc.set(NamespacedKey(plugin, "profile_command"), PersistentDataType.STRING, command)
             }
 
-            // Сохраняем параметр close
             if (itemsSection.getBoolean("$key.close", false)) {
                 val pdc = meta.persistentDataContainer
                 pdc.set(NamespacedKey(plugin, "profile_close"), PersistentDataType.BYTE, 1)
             }
 
-            // Сохраняем параметр cooldown
             val cooldownSeconds = itemsSection.getInt("$key.cooldown", 0)
             if (cooldownSeconds > 0) {
                 val pdc = meta.persistentDataContainer
                 pdc.set(NamespacedKey(plugin, "profile_cooldown"), PersistentDataType.INTEGER, cooldownSeconds)
             }
 
-            // Сохраняем параметр sound
             itemsSection.getString("$key.sound")?.let { sound ->
                 val pdc = meta.persistentDataContainer
                 pdc.set(NamespacedKey(plugin, "profile_sound"), PersistentDataType.STRING, sound)
@@ -108,5 +100,79 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
     fun open(player: Player) {
         createInventory()
         player.openInventory(inventory)
+        plugin.addActiveProfile(player, this)
+    }
+
+    // Метод для получения обновлённых предметов с указанием их слотов
+    fun getUpdatedItems(): Map<Int, ItemStack> {
+        val updatedItems = mutableMapOf<Int, ItemStack>()
+        val itemsSection = plugin.config.getConfigurationSection("gui.items") ?: return updatedItems
+
+        for (key in itemsSection.getKeys(false)) {
+            val slot = key.toIntOrNull() ?: continue
+
+            // Проверяем параметр update (по умолчанию true)
+            val shouldUpdate = itemsSection.getBoolean("$key.update", true)
+            if (!shouldUpdate) continue
+
+            // Обновляем только предметы, которые содержат любые плейсхолдеры
+            val displayName = itemsSection.getString("$key.display_name") ?: ""
+            val lore = itemsSection.getStringList("$key.lore")
+            val placeholderPattern = Regex("%[^%]+%")
+            if (!placeholderPattern.containsMatchIn(displayName) &&
+                lore.none { placeholderPattern.containsMatchIn(it) }) {
+                continue
+            }
+
+            val materialName = itemsSection.getString("$key.material")?.uppercase() ?: continue
+            val material = Material.getMaterial(materialName) ?: continue
+
+            val item = ItemStack(material)
+            val meta = item.itemMeta ?: continue
+
+            itemsSection.getString("$key.display_name")?.let {
+                val withPlaceholders = plugin.setPlaceholders(target, it)
+                val translated = plugin.translateColors(withPlaceholders)
+                val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
+                meta.setDisplayName(finalDisplayName)
+            }
+            itemsSection.getStringList("$key.lore").map {
+                val withPlaceholders = plugin.setPlaceholders(target, it)
+                val translated = plugin.translateColors(withPlaceholders)
+                if (translated.startsWith("§")) translated else "§r$translated"
+            }.let {
+                if (it.isNotEmpty()) meta.lore = it
+            }
+
+            if (material == Material.PLAYER_HEAD && itemsSection.getString("$key.head_owner") != null) {
+                (meta as SkullMeta).owningPlayer = target
+            }
+
+            itemsSection.getString("$key.command")?.let { command ->
+                val pdc = meta.persistentDataContainer
+                pdc.set(NamespacedKey(plugin, "profile_command"), PersistentDataType.STRING, command)
+            }
+
+            if (itemsSection.getBoolean("$key.close", false)) {
+                val pdc = meta.persistentDataContainer
+                pdc.set(NamespacedKey(plugin, "profile_close"), PersistentDataType.BYTE, 1)
+            }
+
+            val cooldownSeconds = itemsSection.getInt("$key.cooldown", 0)
+            if (cooldownSeconds > 0) {
+                val pdc = meta.persistentDataContainer
+                pdc.set(NamespacedKey(plugin, "profile_cooldown"), PersistentDataType.INTEGER, cooldownSeconds)
+            }
+
+            itemsSection.getString("$key.sound")?.let { sound ->
+                val pdc = meta.persistentDataContainer
+                pdc.set(NamespacedKey(plugin, "profile_sound"), PersistentDataType.STRING, sound)
+            }
+
+            item.itemMeta = meta
+            updatedItems[slot] = item
+        }
+
+        return updatedItems
     }
 }
