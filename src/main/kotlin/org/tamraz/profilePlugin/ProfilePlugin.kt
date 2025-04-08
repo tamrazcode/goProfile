@@ -22,7 +22,17 @@ class ProfilePlugin : JavaPlugin() {
         getCommand("profile")?.setExecutor(ProfileCommand(this))
         getCommand("profileplugin")?.setExecutor(ProfilePluginCommand(this))
         getCommand("setprofiletitle")?.setExecutor(SetProfileTitleCommand(this))
+        getCommand("like")?.setExecutor(RatingCommand(this, true))
+        getCommand("dislike")?.setExecutor(RatingCommand(this, false))
+        getCommand("unlike")?.setExecutor(UnratingCommand(this, true))
+        getCommand("undislike")?.setExecutor(UnratingCommand(this, false))
         Bukkit.getPluginManager().registerEvents(InventoryClickListener(this), this)
+
+        // Регистрируем плейсхолдеры
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            ProfilePlaceholderExpansion(this).register()
+        }
+
         logger.info("ProfilePlugin успешно запущен!")
     }
 
@@ -56,15 +66,12 @@ class ProfilePlugin : JavaPlugin() {
     }
 
     fun translateColors(text: String): String {
-        logger.info("Processing text: $text")
-
         // Сначала обрабатываем HEX коды
         var result = text
         val hexPattern = Regex("&#([A-Fa-f0-9]{6})")
 
         result = hexPattern.replace(result) { match ->
             val hex = match.groupValues[1]
-            logger.info("Found HEX color: #$hex")
 
             // Правильный формат для Minecraft 1.16+
             val chars = hex.toCharArray()
@@ -73,7 +80,6 @@ class ProfilePlugin : JavaPlugin() {
 
         // Затем обрабатываем стандартные цветовые коды
         result = ChatColor.translateAlternateColorCodes('&', result)
-        logger.info("Final result: $result")
 
         return result
     }

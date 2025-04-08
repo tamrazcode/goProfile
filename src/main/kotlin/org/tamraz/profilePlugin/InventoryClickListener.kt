@@ -17,8 +17,11 @@ class InventoryClickListener(private val plugin: ProfilePlugin) : Listener {
     fun onInventoryClick(event: InventoryClickEvent) {
         if (event.inventory.holder !is ProfileInventoryHolder) return
 
-        // Отменяем клик по умолчанию
+        // Отменяем клик по умолчанию для всех типов кликов (включая Shift)
         event.isCancelled = true
+
+        // Проверяем, что клик был по предмету в инвентаре GUI (не в инвентаре игрока)
+        if (event.clickedInventory?.holder !is ProfileInventoryHolder) return
 
         // Проверяем, есть ли у предмета команда
         val item = event.currentItem ?: return
@@ -27,6 +30,10 @@ class InventoryClickListener(private val plugin: ProfilePlugin) : Listener {
 
         // Получаем игрока, который кликнул
         val player = event.whoClicked as? org.bukkit.entity.Player ?: return
+
+        // Получаем target из ProfileInventoryHolder
+        val holder = event.inventory.holder as ProfileInventoryHolder
+        val target = holder.getTarget() ?: return
 
         // Проверяем параметр sound
         val soundName = pdc.get(NamespacedKey(plugin, "profile_sound"), org.bukkit.persistence.PersistentDataType.STRING)
@@ -70,12 +77,12 @@ class InventoryClickListener(private val plugin: ProfilePlugin) : Listener {
         when {
             command.startsWith("[console]") -> {
                 val actualCommand = command.substring("[console]".length).trim()
-                val formattedCommand = actualCommand.replace("{player}", player.name)
+                val formattedCommand = actualCommand.replace("{player}", target.name ?: "Unknown")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand)
             }
             command.startsWith("[player]") -> {
                 val actualCommand = command.substring("[player]".length).trim()
-                val formattedCommand = actualCommand.replace("{player}", player.name)
+                val formattedCommand = actualCommand.replace("{player}", target.name ?: "Unknown")
                 Bukkit.dispatchCommand(player, formattedCommand)
             }
         }

@@ -1,13 +1,16 @@
+default_title: "&eПрофиль %player_name%"
+
 gui:
   size: 54
   items:
     1:
       material: PLAYER_HEAD
       head_owner: "%player_name%"
-      display_name: "&a%player_name%"
+      display_name: "%luckperms_prefix%"
       lore:
-        - "&6Время игры: &f%cmi_user_playtime_hoursf% &7час."
-        - "&6Ранг: &7%luckperms_prefix%"
+        - "&#E2ADFDВремя игры: &f%cmi_user_playtime_hoursf% &7час."
+        - "&#ACD45BРанг: &7%luckperms_prefix%"
+        - "&#ACD45BИмечко: &7%flectonepulse_player% &%flectonepulse_fcolor_1%БЛА"
     2:
       material: DIAMOND_PICKAXE
       display_name: "&5Добыча"
@@ -18,6 +21,40 @@ gui:
       display_name: "&eИнфа"
       lore:
         - "&7Здоровье: &c%player_health%"
+        - "&aЛайки: &f%profile_like%"
+        - "&cДизлайки: &f%profile_dislike%"
+    4:
+      material: EMERALD
+      display_name: "&aПоставить лайк"
+      lore:
+        - "&7Нажмите, чтобы поставить лайк!"
+      command: "[player] like {player}"
+      cooldown: 5
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    5:
+      material: REDSTONE
+      display_name: "&cПоставить дизлайк"
+      lore:
+        - "&7Нажмите, чтобы поставить дизлайк!"
+      command: "[player] dislike {player}"
+      cooldown: 5
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    6:
+      material: EMERALD_BLOCK
+      display_name: "&aУбрать лайк"
+      lore:
+        - "&7Нажмите, чтобы убрать свой лайк!"
+      command: "[player] unlike {player}"
+      cooldown: 5
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    7:
+      material: REDSTONE_BLOCK
+      display_name: "&cУбрать дизлайк"
+      lore:
+        - "&7Нажмите, чтобы убрать свой дизлайк!"
+      command: "[player] undislike {player}"
+      cooldown: 5
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     53:
       material: ARROW
       display_name: "&eОткрыть меню"

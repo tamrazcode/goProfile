@@ -14,9 +14,9 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
     private lateinit var inventory: org.bukkit.inventory.Inventory
 
     private fun createInventory() {
-        val holder = ProfileInventoryHolder()
-        // Получаем title из базы данных
-        val rawTitle = plugin.database.getTitle(target)
+        val holder = ProfileInventoryHolder(target) // Передаём target
+        // Получаем title из базы данных, если null — используем значение из конфига
+        val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "&eПрофиль %player_name%")!!
         // Применяем плейсхолдеры и цветовые коды
         val titleWithPlaceholders = plugin.setPlaceholders(target, rawTitle)
         val title = plugin.translateColors(titleWithPlaceholders)
@@ -25,6 +25,7 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
             plugin.config.getInt("gui.size"),
             title
         )
+        holder.setInventory(inventory) // Устанавливаем инвентарь в holder
         loadItems()
         loadPlayerItems()
     }
@@ -41,11 +42,16 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
 
             itemsSection.getString("$key.display_name")?.let {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                meta.setDisplayName(plugin.translateColors(withPlaceholders))
+                val translated = plugin.translateColors(withPlaceholders)
+                // Добавляем §r в начало, если строка не начинается с цветового кода
+                val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
+                meta.setDisplayName(finalDisplayName)
             }
             itemsSection.getStringList("$key.lore").map {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                plugin.translateColors(withPlaceholders)
+                val translated = plugin.translateColors(withPlaceholders)
+                // Добавляем §r в начало каждой строки, если она не начинается с цветового кода
+                if (translated.startsWith("§")) translated else "§r$translated"
             }.let {
                 if (it.isNotEmpty()) meta.lore = it
             }
@@ -67,10 +73,10 @@ class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflineP
             }
 
             // Сохраняем параметр cooldown
-            val cooldown = itemsSection.getInt("$key.cooldown", 0)
-            if (cooldown > 0) {
+            val cooldownSeconds = itemsSection.getInt("$key.cooldown", 0)
+            if (cooldownSeconds > 0) {
                 val pdc = meta.persistentDataContainer
-                pdc.set(NamespacedKey(plugin, "profile_cooldown"), PersistentDataType.INTEGER, cooldown)
+                pdc.set(NamespacedKey(plugin, "profile_cooldown"), PersistentDataType.INTEGER, cooldownSeconds)
             }
 
             // Сохраняем параметр sound

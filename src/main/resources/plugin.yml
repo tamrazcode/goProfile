@@ -15,6 +15,19 @@ commands:
   setprofiletitle:
     description: Устанавливает название профиля
     usage: /<command> <title>
+  like:
+    description: Поставить лайк игроку
+    usage: /<command> <player>
+  dislike:
+    description: Поставить дизлайк игроку
+    usage: /<command> <player>
+
+  unlike:
+    description: Снять лайк с игрока
+    usage: /<command> [admin] <player>
+  undislike:
+    description: Снять дизлайк с игрока
+    usage: /<command> [admin] <player>
 
 permissions:
   profileplugin.admin:
