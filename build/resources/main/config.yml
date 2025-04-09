@@ -1,3 +1,5 @@
+language: "ru_ru"  # Локализация: ru_ru или en_us (по умолчанию en_us)
+
 default_title: "&eПрофиль %player_name%"
 
 gui:
@@ -6,11 +8,11 @@ gui:
     1:
       material: PLAYER_HEAD
       head_owner: "%player_name%"
-      display_name: "%luckperms_prefix%"
+      display_name: "%player_name%"
       lore:
         - "&#E2ADFDВремя игры: &f%cmi_user_playtime_hoursf% &7час."
         - "&#ACD45BРанг: &7%luckperms_prefix%"
-        - "&#ACD45BИмечко: &7%flectonepulse_player% &%flectonepulse_fcolor_1%БЛА"
+        - "&#ACD45BНик: &7%flectonepulse_player%"
       update: true
     2:
       material: DIAMOND_PICKAXE

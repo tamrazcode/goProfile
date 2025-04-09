@@ -7,21 +7,21 @@ depend: [LuckPerms, PlaceholderAPI]
 commands:
   profile:
     description: Открывает профиль игрока
-    usage: /profile [игрок]
+    usage: /<command> [игрок]
   profileplugin:
     description: Управление плагином ProfilePlugin
-    usage: /profileplugin <reload>
+    usage: /<command> <reload>
     permission: profileplugin.admin
   setprofiletitle:
     description: Устанавливает название профиля
     usage: /<command> <title>
+    permission: profileplugin.admin
   like:
     description: Поставить лайк игроку
     usage: /<command> <player>
   dislike:
     description: Поставить дизлайк игроку
     usage: /<command> <player>
-
   unlike:
     description: Снять лайк с игрока
     usage: /<command> [admin] <player>

@@ -23,13 +23,24 @@ class ProfilePlugin : JavaPlugin() {
         saveDefaultConfig()
         saveDefaultMessages()
         database = Database(this)
+
+        // Регистрируем команды и TabCompleter
+        val profilePluginCommand = ProfilePluginCommand(this)
         getCommand("profile")?.setExecutor(ProfileCommand(this))
-        getCommand("profileplugin")?.setExecutor(ProfilePluginCommand(this))
+        getCommand("profileplugin")?.setExecutor(profilePluginCommand)
+        getCommand("profileplugin")?.tabCompleter = profilePluginCommand
         getCommand("setprofiletitle")?.setExecutor(SetProfileTitleCommand(this))
-        getCommand("like")?.setExecutor(RatingCommand(this, true))
-        getCommand("dislike")?.setExecutor(RatingCommand(this, false))
-        getCommand("unlike")?.setExecutor(UnratingCommand(this, true))
-        getCommand("undislike")?.setExecutor(UnratingCommand(this, false))
+        val likeCommand = RatingCommand(this, true)
+        getCommand("like")?.setExecutor(likeCommand)
+        val dislikeCommand = RatingCommand(this, false)
+        getCommand("dislike")?.setExecutor(dislikeCommand)
+        val unlikeCommand = UnratingCommand(this, true)
+        getCommand("unlike")?.setExecutor(unlikeCommand)
+        getCommand("unlike")?.tabCompleter = unlikeCommand
+        val undislikeCommand = UnratingCommand(this, false)
+        getCommand("undislike")?.setExecutor(undislikeCommand)
+        getCommand("undislike")?.tabCompleter = undislikeCommand
+
         Bukkit.getPluginManager().registerEvents(InventoryClickListener(this), this)
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -95,20 +106,24 @@ class ProfilePlugin : JavaPlugin() {
     }
 
     private fun saveDefaultMessages() {
-        val messagesFile = File(dataFolder, "messages.yml")
+        val language = config.getString("language", "en_us") // По умолчанию en_us
+        val messagesFileName = if (language == "ru_ru") "messages_ru.yml" else "messages_en.yml"
+        val messagesFile = File(dataFolder, messagesFileName)
         if (!messagesFile.exists()) {
-            saveResource("messages.yml", false)
+            saveResource(messagesFileName, false)
         }
         messages = YamlConfiguration.loadConfiguration(messagesFile)
     }
 
     fun reloadMessages() {
-        val messagesFile = File(dataFolder, "messages.yml")
+        val language = config.getString("language", "en_us")
+        val messagesFileName = if (language == "ru_ru") "messages_ru.yml" else "messages_en.yml"
+        val messagesFile = File(dataFolder, messagesFileName)
         messages = YamlConfiguration.loadConfiguration(messagesFile)
     }
 
     fun getMessage(key: String, player: org.bukkit.OfflinePlayer? = null, vararg args: Any): String {
-        val message = messages.getString(key, "Сообщение не найдено: $key") ?: "Сообщение не найдено: $key"
+        val message = messages.getString(key, "Message not found: $key") ?: "Message not found: $key"
         val formatted = String.format(message, *args)
         val withPlaceholders = if (player != null) setPlaceholders(player, formatted) else formatted
         return translateColors(withPlaceholders)

@@ -4,9 +4,10 @@ import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class UnratingCommand(private val plugin: ProfilePlugin, private val isLike: Boolean) : CommandExecutor {
+class UnratingCommand(private val plugin: ProfilePlugin, private val isLike: Boolean) : CommandExecutor, TabCompleter {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
@@ -19,14 +20,12 @@ class UnratingCommand(private val plugin: ProfilePlugin, private val isLike: Boo
             return true
         }
 
-        // Проверяем, является ли команда админской (например, /unlike admin <игрок>)
         val isAdminCommand = args[0].equals("admin", ignoreCase = true) && args.size >= 2
         if (isAdminCommand && !sender.hasPermission("profileplugin.admin")) {
             sender.sendMessage(plugin.getMessage("setprofiletitle.no-permission"))
             return true
         }
 
-        // Определяем имя игрока
         val targetName = if (isAdminCommand) args[1] else args[0]
         val onlinePlayer = Bukkit.getPlayerExact(targetName)
         val target = if (onlinePlayer != null) {
@@ -42,11 +41,9 @@ class UnratingCommand(private val plugin: ProfilePlugin, private val isLike: Boo
         }
 
         if (isAdminCommand) {
-            // Админ-команда: сбрасываем все лайки/дизлайки
             plugin.database.resetRatings(target, if (isLike) "LIKE" else "DISLIKE")
             sender.sendMessage(plugin.getMessage(if (isLike) "unlike.admin-success" else "undislike.admin-success", null, targetName))
         } else {
-            // Обычная команда: снимаем один лайк/дизлайк от игрока
             val senderPlayer = sender as Player
             val success = plugin.database.removeRating(senderPlayer, target, if (isLike) "LIKE" else "DISLIKE")
             if (success) {
@@ -57,5 +54,24 @@ class UnratingCommand(private val plugin: ProfilePlugin, private val isLike: Boo
         }
 
         return true
+    }
+
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        alias: String,
+        args: Array<out String>
+    ): List<String> {
+        if (args.size == 1) {
+            val suggestions = mutableListOf<String>()
+            // Добавляем имена игроков
+            suggestions.addAll(Bukkit.getOnlinePlayers().map { it.name })
+            // Если у игрока есть права, добавляем "admin"
+            if (sender.hasPermission("profileplugin.admin")) {
+                suggestions.add("admin")
+            }
+            return suggestions.filter { it.startsWith(args[0], ignoreCase = true) }
+        }
+        return emptyList()
     }
 }
