@@ -26,7 +26,7 @@ class ProfilePlugin : JavaPlugin() {
 
         // Регистрируем команды и TabCompleter
         val profilePluginCommand = ProfilePluginCommand(this)
-        getCommand("profile")?.setExecutor(ProfileCommand(this))
+        getCommand("profile")?.setExecutor(ProfilePluginCommand(this))
         getCommand("profileplugin")?.setExecutor(profilePluginCommand)
         getCommand("profileplugin")?.tabCompleter = profilePluginCommand
         getCommand("setprofiletitle")?.setExecutor(SetProfileTitleCommand(this))

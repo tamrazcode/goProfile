@@ -1,9 +1,20 @@
+plugin:
+  usage: "&cUsage: /profileplugin <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
+
 profile:
+  not-player: "&cThis command is only for players!"
   player-not-found: "&cPlayer %s not found!"
+  status:
+    usage: "&cUsage: /profileplugin profile status <identifier> | set <text> | clear"
+    set-usage: "&cUsage: /profileplugin profile status set <text>"
+    too-long: "&cStatus cannot be longer than 32 characters!"
+    invalid-id: "&cStatus with identifier %s not found!"
+    set-success: "&aYour status has been set to: %s"
+    cleared: "&aYour status has been cleared!"
 
 setprofiletitle:
   no-permission: "&cYou do not have permission to use this command!"
-  usage: "&cUsage: /setprofiletitle <player> <title>"
+  usage: "&cUsage: /profileplugin setprofiletitle <player> <title>"
   player-not-found: "&cPlayer %s not found!"
   success: "&aProfile title for player %s has been set to: %s"
 
@@ -11,25 +22,25 @@ inventory:
   cooldown: "&cPlease wait %d more seconds before using this again!"
 
 like:
-  usage: "&cUsage: /like <player>"
+  usage: "&cUsage: /profileplugin like <player>"
   self: "&cYou cannot like yourself!"
   already-rated: "&cYou have already rated player %s!"
   success: "&aYou have liked player %s!"
 
 dislike:
-  usage: "&cUsage: /dislike <player>"
+  usage: "&cUsage: /profileplugin dislike <player>"
   self: "&cYou cannot dislike yourself!"
   already-rated: "&cYou have already rated player %s!"
   success: "&cYou have disliked player %s!"
 
 unlike:
-  usage: "&cUsage: /unlike [admin] <player>"
+  usage: "&cUsage: /profileplugin unlike [admin] <player>"
   not-rated: "&cYou have not liked player %s!"
   success: "&aYou have removed your like from player %s!"
   admin-success: "&aAll likes for player %s have been reset!"
 
 undislike:
-  usage: "&cUsage: /undislike [admin] <player>"
+  usage: "&cUsage: /profileplugin undislike [admin] <player>"
   not-rated: "&cYou have not disliked player %s!"
   success: "&cYou have removed your dislike from player %s!"
   admin-success: "&cAll dislikes for player %s have been reset!"

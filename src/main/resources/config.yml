@@ -1,4 +1,4 @@
-language: "ru_ru"  # Локализация: ru_ru или en_us (по умолчанию en_us)
+language: "ru_ru"
 
 default_title: "&eПрофиль %player_name%"
 
@@ -27,13 +27,14 @@ gui:
         - "&7Здоровье: &c%player_health%"
         - "&aЛайки: &f%profile_like%"
         - "&cДизлайки: &f%profile_dislike%"
+        - "&eСтатус: &f%profile_status%"
       update: true
     4:
       material: EMERALD
       display_name: "&aПоставить лайк"
       lore:
         - "&7Нажмите, чтобы поставить лайк!"
-      command: "[player] like {player}"
+      command: "[player] profileplugin like {player}"  # Обновлено
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -42,7 +43,7 @@ gui:
       display_name: "&cПоставить дизлайк"
       lore:
         - "&7Нажмите, чтобы поставить дизлайк!"
-      command: "[player] dislike {player}"
+      command: "[player] profileplugin dislike {player}"  # Обновлено
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -51,7 +52,7 @@ gui:
       display_name: "&aУбрать лайк"
       lore:
         - "&7Нажмите, чтобы убрать свой лайк!"
-      command: "[player] unlike {player}"
+      command: "[player] profileplugin unlike {player}"  # Обновлено
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -60,7 +61,7 @@ gui:
       display_name: "&cУбрать дизлайк"
       lore:
         - "&7Нажмите, чтобы убрать свой дизлайк!"
-      command: "[player] undislike {player}"
+      command: "[player] profileplugin undislike {player}"  # Обновлено
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false

@@ -1,9 +1,20 @@
+plugin:
+  usage: "&cИспользование: /profileplugin <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
+
 profile:
+  not-player: "&cЭта команда только для игроков!"
   player-not-found: "&cИгрок %s не найден!"
+  status:
+    usage: "&cИспользование: /profileplugin profile status <идентификатор> | set <текст> | clear"
+    set-usage: "&cИспользование: /profileplugin profile status set <текст>"
+    too-long: "&cСтатус не может быть длиннее 32 символов!"
+    invalid-id: "&cСтатус с идентификатором %s не найден!"
+    set-success: "&aВаш статус установлен: %s"
+    cleared: "&aВаш статус очищен!"
 
 setprofiletitle:
   no-permission: "&cУ вас нет прав для выполнения этой команды!"
-  usage: "&cИспользование: /setprofiletitle <игрок> <заголовок>"
+  usage: "&cИспользование: /profileplugin setprofiletitle <игрок> <заголовок>"
   player-not-found: "&cИгрок %s не найден!"
   success: "&aЗаголовок профиля игрока %s успешно установлен на: %s"
 
@@ -11,25 +22,25 @@ inventory:
   cooldown: "&cПодождите еще %d секунд перед повторным использованием!"
 
 like:
-  usage: "&cИспользование: /like <игрок>"
+  usage: "&cИспользование: /profileplugin like <игрок>"
   self: "&cВы не можете поставить лайк самому себе!"
   already-rated: "&cВы уже поставили оценку игроку %s!"
   success: "&aВы поставили лайк игроку %s!"
 
 dislike:
-  usage: "&cИспользование: /dislike <игрок>"
+  usage: "&cИспользование: /profileplugin dislike <игрок>"
   self: "&cВы не можете поставить дизлайк самому себе!"
   already-rated: "&cВы уже поставили оценку игроку %s!"
   success: "&cВы поставили дизлайк игроку %s!"
 
 unlike:
-  usage: "&cИспользование: /unlike [admin] <игрок>"
+  usage: "&cИспользование: /profileplugin unlike [admin] <игрок>"
   not-rated: "&cВы не ставили лайк игроку %s!"
   success: "&aВы убрали свой лайк у игрока %s!"
   admin-success: "&aВсе лайки игрока %s были сброшены!"
 
 undislike:
-  usage: "&cИспользование: /undislike [admin] <игрок>"
+  usage: "&cИспользование: /profileplugin undislike [admin] <игрок>"
   not-rated: "&cВы не ставили дизлайк игроку %s!"
   success: "&cВы убрали свой дизлайк у игрока %s!"
   admin-success: "&cВсе дизлайки игрока %s были сброшены!"

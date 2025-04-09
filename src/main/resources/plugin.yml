@@ -1,35 +1,18 @@
 name: ProfilePlugin
 version: 1.0
 main: com.tamraz.profileplugin.ProfilePlugin
-author: tamraz
 api-version: 1.21
-depend: [LuckPerms, PlaceholderAPI]
+softdepend: [PlaceholderAPI]
 commands:
-  profile:
-    description: Открывает профиль игрока
-    usage: /<command> [игрок]
   profileplugin:
-    description: Управление плагином ProfilePlugin
-    usage: /<command> <reload>
-    permission: profileplugin.admin
-  setprofiletitle:
-    description: Устанавливает название профиля
-    usage: /<command> <title>
-    permission: profileplugin.admin
-  like:
-    description: Поставить лайк игроку
-    usage: /<command> <player>
-  dislike:
-    description: Поставить дизлайк игроку
-    usage: /<command> <player>
-  unlike:
-    description: Снять лайк с игрока
-    usage: /<command> [admin] <player>
-  undislike:
-    description: Снять дизлайк с игрока
-    usage: /<command> [admin] <player>
-
+    description: Main command for ProfilePlugin
+    usage: /<command> <subcommand>
+    aliases: []
+    permission: profileplugin.use
 permissions:
+  profileplugin.use:
+    description: Allows usage of ProfilePlugin commands
+    default: true
   profileplugin.admin:
-    description: Доступ к административным командам
+    description: Access to admin commands of the plugin
     default: op
