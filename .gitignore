@@ -1,10 +1,18 @@
-# IntelliJ IDEA
-.idea/
-*.iml
-
-# Gradle
+### Gradle & IntelliJ ###
 .gradle/
+/.idea/
 build/
+out/
+run/
+*.iml
+.idea_modules/
 
-# Локальные файлы
-*.log
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
