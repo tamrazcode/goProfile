@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class UnratingCommand(private val plugin: ProfilePlugin, private val isLike: Boolean) : CommandExecutor, TabCompleter {
+class UnratingCommand(private val plugin: GoProfile, private val isLike: Boolean) : CommandExecutor, TabCompleter {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {

@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class RatingCommand(private val plugin: ProfilePlugin, private val isLike: Boolean) : CommandExecutor {
+class RatingCommand(private val plugin: GoProfile, private val isLike: Boolean) : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {

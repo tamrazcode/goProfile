@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.Bukkit
 import org.bukkit.Sound
@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.NamespacedKey
 import org.bukkit.event.player.PlayerQuitEvent
 
-class InventoryClickListener(private val plugin: ProfilePlugin) : Listener {
+class InventoryClickListener(private val plugin: GoProfile) : Listener {
 
     private val cooldowns = mutableMapOf<org.bukkit.entity.Player, MutableMap<Int, Long>>()
 

@@ -1,1 +1,1 @@
-rootProject.name = "ProfilePlugin"
+rootProject.name = "goProfile"

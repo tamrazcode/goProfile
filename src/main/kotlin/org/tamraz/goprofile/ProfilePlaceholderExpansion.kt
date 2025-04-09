@@ -1,11 +1,11 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-class ProfilePlaceholderExpansion(private val plugin: ProfilePlugin) : PlaceholderExpansion() {
+class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderExpansion() {
 
     private val statusConfig: YamlConfiguration by lazy {
         val statusFile = File(plugin.dataFolder, "status.yml")

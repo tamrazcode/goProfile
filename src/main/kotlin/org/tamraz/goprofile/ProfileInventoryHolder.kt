@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.Inventory

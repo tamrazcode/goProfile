@@ -1,11 +1,11 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.OfflinePlayer
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
 
-class Database(private val plugin: ProfilePlugin) {
+class Database(private val plugin: GoProfile) {
 
     private lateinit var connection: Connection
 

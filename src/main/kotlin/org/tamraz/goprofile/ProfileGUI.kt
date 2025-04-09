@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.NamespacedKey
 
-class ProfileGUI(private val plugin: ProfilePlugin, private val target: OfflinePlayer) {
+class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlayer) {
 
     private lateinit var inventory: org.bukkit.inventory.Inventory
 

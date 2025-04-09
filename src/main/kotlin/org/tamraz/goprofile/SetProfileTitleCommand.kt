@@ -1,12 +1,11 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
-class SetProfileTitleCommand(private val plugin: ProfilePlugin) : CommandExecutor {
+class SetProfileTitleCommand(private val plugin: GoProfile) : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         // Проверяем, есть ли у отправителя права администратора

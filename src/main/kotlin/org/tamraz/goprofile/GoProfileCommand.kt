@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-class ProfilePluginCommand(private val plugin: ProfilePlugin) : CommandExecutor, TabCompleter {
+class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabCompleter {
 
     private val statusConfig: YamlConfiguration by lazy {
         val statusFile = File(plugin.dataFolder, "status.yml")

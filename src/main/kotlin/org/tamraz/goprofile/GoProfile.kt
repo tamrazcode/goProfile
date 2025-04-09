@@ -1,4 +1,4 @@
-package com.tamraz.profileplugin
+package org.tamraz.goprofile
 
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.Bukkit
@@ -9,7 +9,7 @@ import org.bukkit.ChatColor
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
-class ProfilePlugin : JavaPlugin() {
+class GoProfile : JavaPlugin() {
 
     lateinit var database: Database
         private set
@@ -24,22 +24,10 @@ class ProfilePlugin : JavaPlugin() {
         saveDefaultMessages()
         database = Database(this)
 
-        // Регистрируем команды и TabCompleter
-        val profilePluginCommand = ProfilePluginCommand(this)
-        getCommand("profile")?.setExecutor(ProfilePluginCommand(this))
-        getCommand("profileplugin")?.setExecutor(profilePluginCommand)
-        getCommand("profileplugin")?.tabCompleter = profilePluginCommand
-        getCommand("setprofiletitle")?.setExecutor(SetProfileTitleCommand(this))
-        val likeCommand = RatingCommand(this, true)
-        getCommand("like")?.setExecutor(likeCommand)
-        val dislikeCommand = RatingCommand(this, false)
-        getCommand("dislike")?.setExecutor(dislikeCommand)
-        val unlikeCommand = UnratingCommand(this, true)
-        getCommand("unlike")?.setExecutor(unlikeCommand)
-        getCommand("unlike")?.tabCompleter = unlikeCommand
-        val undislikeCommand = UnratingCommand(this, false)
-        getCommand("undislike")?.setExecutor(undislikeCommand)
-        getCommand("undislike")?.tabCompleter = undislikeCommand
+        // Регистрируем главную команду
+        val profilePluginCommand = GoProfileCommand(this)
+        getCommand("goprofile")?.setExecutor(profilePluginCommand)
+        getCommand("goprofile")?.tabCompleter = profilePluginCommand
 
         Bukkit.getPluginManager().registerEvents(InventoryClickListener(this), this)
 
@@ -49,13 +37,13 @@ class ProfilePlugin : JavaPlugin() {
 
         startGuiUpdateTask()
 
-        logger.info("ProfilePlugin успешно запущен!")
+        logger.info("goProfile успешно запущен!")
     }
 
     override fun onDisable() {
         database.close()
         activeProfiles.clear()
-        logger.info("ProfilePlugin отключен!")
+        logger.info("goProfile отключен!")
     }
 
     private fun startGuiUpdateTask() {
@@ -86,9 +74,9 @@ class ProfilePlugin : JavaPlugin() {
                                     }
                                 }
                             }
-                        }.runTask(this@ProfilePlugin)
+                        }.runTask(this@GoProfile)
                     }
-                }.runTaskAsynchronously(this@ProfilePlugin)
+                }.runTaskAsynchronously(this@GoProfile)
             }
         }.runTaskTimer(this, 0L, 100L) // Каждые 5 секунд (100 тиков)
     }
