@@ -3,6 +3,8 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/tamrazcode/goProfile?color=blue&style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/tamrazcode/goProfile?style=flat-square)
 
+![фрейм 43](https://github.com/user-attachments/assets/49c4a658-c2e4-47eb-80a4-9d03700db636)
+
 **goProfile** is a lightweight and feature-rich Minecraft plugin for Paper/Spigot servers that allows players to view profiles, set likes/dislikes, and customize their status. Perfect for enhancing the social experience on your server!
 
 ---
