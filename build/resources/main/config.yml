@@ -5,8 +5,8 @@
 #  \__, |\___/|_|   |_|  \___/|_| |_|_|\___|
 #  |___/
 
-
 language: "en_us"
+version-check: true  # Check plugin updates
 
 default_title: "&eПрофиль %player_name%"
 
@@ -42,7 +42,7 @@ gui:
       display_name: "&aПоставить лайк"
       lore:
         - "&7Нажмите, чтобы поставить лайк!"
-      command: "[player] goprofile like {player}"  # Обновлено
+      command: "[player] goprofile like {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -51,7 +51,7 @@ gui:
       display_name: "&cПоставить дизлайк"
       lore:
         - "&7Нажмите, чтобы поставить дизлайк!"
-      command: "[player] goprofile dislike {player}"  # Обновлено
+      command: "[player] goprofile dislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -60,7 +60,7 @@ gui:
       display_name: "&aУбрать лайк"
       lore:
         - "&7Нажмите, чтобы убрать свой лайк!"
-      command: "[player] goprofile unlike {player}"  # Обновлено
+      command: "[player] goprofile unlike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -69,7 +69,7 @@ gui:
       display_name: "&cУбрать дизлайк"
       lore:
         - "&7Нажмите, чтобы убрать свой дизлайк!"
-      command: "[player] goprofile undislike {player}"  # Обновлено
+      command: "[player] goprofile undislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false

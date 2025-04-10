@@ -44,3 +44,6 @@ undislike:
   not-rated: "&cYou have not disliked player %s!"
   success: "&cYou have removed your dislike from player %s!"
   admin-success: "&cAll dislikes for player %s have been reset!"
+
+reload:
+  success: "&aConfiguration and messages reloaded!"

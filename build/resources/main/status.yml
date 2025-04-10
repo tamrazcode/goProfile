@@ -1,9 +1,9 @@
 statuses:
   online:
-    display: "&aОнлайн"
+    display: "&aOnline"
   busy:
-    display: "&cЗанят"
+    display: "&cBusy"
   afk:
     display: "&7AFK"
   looking_for_team:
-    display: "&eИщу команду!"
+    display: "&eLook for team!"
