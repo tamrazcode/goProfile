@@ -111,7 +111,7 @@ Contributions are welcome! If you have ideas, bug reports, or improvements:
 
 ## 📬 Support
 
-If you have questions or need help, feel free to open an issue on GitHub or join my [Discord](https://discord.gg/ktRjwkR7yp)
+If you have questions or need help, feel free to open an issue on GitHub or join my Discord (Later...)
 
 ---
 
