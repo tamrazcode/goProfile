@@ -5,7 +5,7 @@
 
 ![фрейм 43](https://github.com/user-attachments/assets/dcb6d3d0-7b4e-4756-aa3f-b4eb90a609fa)
 
-**goProfile** is a lightweight and feature-rich Minecraft plugin for **1.21** or above Paper/Spigot servers that allows players to view profiles, set likes/dislikes, customize their status and add any placeholders you want. Perfect for enhancing the social experience on your server!
+**goProfile** is a lightweight and feature-rich Minecraft plugin for **1.20-1.21** or above Paper/Spigot servers that allows players to view profiles, set likes/dislikes, customize their status and add any placeholders you want. Perfect for enhancing the social experience on your server!
 
 ---
 
@@ -41,7 +41,7 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 
 ## 🔧 Requirements
 
-- **Server**: Paper/Spigot 1.21 (or higher).
+- **Server**: Paper/Spigot 1.20-1.21 (or higher).
 - **Optional**: [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) for placeholder support.
 
 ---
