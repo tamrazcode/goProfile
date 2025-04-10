@@ -5,96 +5,100 @@
 #  \__, |\___/|_|   |_|  \___/|_| |_|_|\___|
 #  |___/
 
-language: "en_us"
-version-check: true  # Check plugin updates
+language: "ru_ru"
+version-check: true
 
-default_title: "&eПрофиль %player_name%"
+default_title: "&eProfile of %player_name%"
 
 gui:
   size: 54
   items:
-    1:
+    # Заполняем все слоты чёрными стеклянными панелями
+    0-53:
+      material: BLACK_STAINED_GLASS_PANE
+      display_name: " "
+      update: false
+
+    # Основные предметы в центре (форма ромба)
+    13:
       material: PLAYER_HEAD
       head_owner: "%player_name%"
       display_name: "%player_name%"
       lore:
-        - "&#E2ADFDВремя игры: &f%cmi_user_playtime_hoursf% &7час."
-        - "&#ACD45BРанг: &7%luckperms_prefix%"
-        - "&#ACD45BНик: &7%flectonepulse_player%"
+        - "&#E2ADFDPlaytime: &f%cmi_user_playtime_hoursf% &7hours"
+        - "&#ACD45BRank: &7%luckperms_prefix%"
+        - "&#ACD45BNickname: &7%flectonepulse_player%"
       update: true
-    2:
-      material: DIAMOND_PICKAXE
-      display_name: "&5Добыча"
-      lore:
-        - "&7Блоков добыто: %statistic_mine_block%"
-      update: true
-    3:
-      material: STONE
-      display_name: "&eИнфа"
-      lore:
-        - "&7Здоровье: &c%player_health%"
-        - "&aЛайки: &f%profile_like%"
-        - "&cДизлайки: &f%profile_dislike%"
-        - "&eСтатус: &f%profile_status%"
-      update: true
-    4:
-      material: EMERALD
-      display_name: "&aПоставить лайк"
-      lore:
-        - "&7Нажмите, чтобы поставить лайк!"
-      command: "[player] goprofile like {player}"
-      cooldown: 5
-      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
-      update: false
-    5:
+    23:
       material: REDSTONE
-      display_name: "&cПоставить дизлайк"
+      display_name: "&cDislike"
       lore:
-        - "&7Нажмите, чтобы поставить дизлайк!"
+        - "&7Click to dislike!"
       command: "[player] goprofile dislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
-    6:
-      material: EMERALD_BLOCK
-      display_name: "&aУбрать лайк"
+    22:
+      material: STONE
+      display_name: "&eInfo"
       lore:
-        - "&7Нажмите, чтобы убрать свой лайк!"
+        - "&7Health: &c%player_health%"
+        - "&aLikes: &f%profile_like%"
+        - "&cDislikes: &f%profile_dislike%"
+        - "&eStatus: &f%profile_status%"
+        - "&7Blocks Mined: %statistic_mine_block%"
+      update: true
+    21:
+      material: EMERALD
+      display_name: "&aLike"
+      lore:
+        - "&7Click to like!"
+      command: "[player] goprofile like {player}"
+      cooldown: 5
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      update: false
+    30:
+      material: EMERALD_BLOCK
+      display_name: "&aRemove Like"
+      lore:
+        - "&7Click to remove your like!"
       command: "[player] goprofile unlike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
-    7:
+    32:
       material: REDSTONE_BLOCK
-      display_name: "&cУбрать дизлайк"
+      display_name: "&cRemove Dislike"
       lore:
-        - "&7Нажмите, чтобы убрать свой дизлайк!"
+        - "&7Click to remove your dislike!"
       command: "[player] goprofile undislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
-    53:
+
+    # Кнопки внизу
+    45:
       material: ARROW
-      display_name: "&eОткрыть меню"
+      display_name: "&eOpen Menu"
       lore:
-        - "&7Нажмите, чтобы открыть меню!"
+        - "&7Click to open the menu!"
       command: "[console] dm open menu {player}"
       cooldown: 5
       sound: "ENTITY_ITEM_PICKUP"
       update: false
-    52:
+    53:
       material: BARRIER
-      display_name: "&cЗакрыть"
+      display_name: "&cClose"
       lore:
-        - "&7Нажмите, чтобы закрыть профиль!"
+        - "&7Click to close the profile!"
       close: true
       sound: "BLOCK_NOTE_BLOCK_PLING"
       update: false
 
   player_items:
-    helmet: 10
-    chestplate: 11
-    leggings: 12
-    boots: 13
-    main_hand: 19
-    off_hand: 20
+    helmet: 1
+    chestplate: 10
+    leggings: 19
+    boots: 28
+    main_hand: 3
+    off_hand: 5

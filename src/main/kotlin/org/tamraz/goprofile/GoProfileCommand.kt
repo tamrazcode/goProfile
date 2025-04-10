@@ -6,18 +6,8 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
-import org.bukkit.configuration.file.YamlConfiguration
-import java.io.File
 
 class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabCompleter {
-
-    private val statusConfig: YamlConfiguration by lazy {
-        val statusFile = File(plugin.dataFolder, "status.yml")
-        if (!statusFile.exists()) {
-            plugin.saveResource("status.yml", false)
-        }
-        YamlConfiguration.loadConfiguration(statusFile)
-    }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
@@ -33,6 +23,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 }
                 plugin.reloadConfig()
                 plugin.reloadMessages()
+                plugin.reloadStatusConfig() // Добавляем перезагрузку status.yml
                 sender.sendMessage(plugin.getMessage("reload.success"))
             }
 
@@ -77,7 +68,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                             else -> {
                                 // Проверяем, является ли аргумент идентификатором готового статуса
                                 val statusId = args[2].lowercase()
-                                val statusDisplay = statusConfig.getString("statuses.$statusId.display")
+                                val statusDisplay = plugin.statusConfig.getString("statuses.$statusId.display")
                                 if (statusDisplay == null) {
                                     sender.sendMessage(plugin.getMessage("profile.status.invalid-id", sender, statusId))
                                     return true
@@ -335,7 +326,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                     return suggestions.filter { it.startsWith(args[1], ignoreCase = true) }
                 }
                 if (args.size == 3 && args[1].equals("status", ignoreCase = true)) {
-                    val statusIds = statusConfig.getConfigurationSection("statuses")?.getKeys(false) ?: emptySet<String>()
+                    val statusIds = plugin.statusConfig.getConfigurationSection("statuses")?.getKeys(false) ?: emptySet<String>()
                     return listOf("set", "clear", *statusIds.toTypedArray()).filter { it.startsWith(args[2], ignoreCase = true) }
                 }
             }

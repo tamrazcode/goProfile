@@ -13,7 +13,6 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
     private lateinit var inventory: org.bukkit.inventory.Inventory
 
-    // Кэш для предметов брони и рук
     private var cachedHelmet: ItemStack? = null
     private var cachedChestplate: ItemStack? = null
     private var cachedLeggings: ItemStack? = null
@@ -23,7 +22,7 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
     private fun createInventory() {
         val holder = ProfileInventoryHolder(target)
-        val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "&eПрофиль %player_name%")!!
+        val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "&eProfile of %player_name%")!!
         val titleWithPlaceholders = plugin.setPlaceholders(target, rawTitle)
         val title = plugin.translateColors(titleWithPlaceholders)
         inventory = Bukkit.createInventory(
@@ -37,9 +36,72 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
     }
 
     private fun loadItems() {
-        // Оставляем без изменений
         val itemsSection = plugin.config.getConfigurationSection("gui.items") ?: return
+
         for (key in itemsSection.getKeys(false)) {
+            if (key.contains("-")) {
+                val rangeParts = key.split("-")
+                if (rangeParts.size != 2) continue
+                val start = rangeParts[0].toIntOrNull() ?: continue
+                val end = rangeParts[1].toIntOrNull() ?: continue
+                if (start < 0 || end < start || end >= inventory.size) continue
+
+                val materialName = itemsSection.getString("$key.material")?.uppercase() ?: continue
+                val material = Material.getMaterial(materialName) ?: continue
+
+                val item = ItemStack(material)
+                val meta = item.itemMeta ?: continue
+
+                itemsSection.getString("$key.display_name")?.let {
+                    val withPlaceholders = plugin.setPlaceholders(target, it)
+                    val translated = plugin.translateColors(withPlaceholders)
+                    val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
+                    meta.setDisplayName(finalDisplayName)
+                }
+                itemsSection.getStringList("$key.lore").map {
+                    val withPlaceholders = plugin.setPlaceholders(target, it)
+                    val translated = plugin.translateColors(withPlaceholders)
+                    if (translated.startsWith("§")) translated else "§r$translated"
+                }.let {
+                    if (it.isNotEmpty()) meta.lore = it
+                }
+
+                if (material == Material.PLAYER_HEAD && itemsSection.getString("$key.head_owner") != null) {
+                    (meta as SkullMeta).owningPlayer = target
+                }
+
+                itemsSection.getString("$key.command")?.let { command ->
+                    val pdc = meta.persistentDataContainer
+                    pdc.set(NamespacedKey(plugin, "profile_command"), PersistentDataType.STRING, command)
+                }
+
+                if (itemsSection.getBoolean("$key.close", false)) {
+                    val pdc = meta.persistentDataContainer
+                    pdc.set(NamespacedKey(plugin, "profile_close"), PersistentDataType.BYTE, 1)
+                }
+
+                val cooldownSeconds = itemsSection.getInt("$key.cooldown", 0)
+                if (cooldownSeconds > 0) {
+                    val pdc = meta.persistentDataContainer
+                    pdc.set(NamespacedKey(plugin, "profile_cooldown"), PersistentDataType.INTEGER, cooldownSeconds)
+                }
+
+                itemsSection.getString("$key.sound")?.let { sound ->
+                    val pdc = meta.persistentDataContainer
+                    pdc.set(NamespacedKey(plugin, "profile_sound"), PersistentDataType.STRING, sound)
+                }
+
+                item.itemMeta = meta
+
+                for (slot in start..end) {
+                    inventory.setItem(slot, item.clone())
+                }
+            }
+        }
+
+        for (key in itemsSection.getKeys(false)) {
+            if (key.contains("-")) continue
+
             val slot = key.toIntOrNull() ?: continue
             val materialName = itemsSection.getString("$key.material")?.uppercase() ?: continue
             val material = Material.getMaterial(materialName) ?: continue
@@ -98,7 +160,7 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
             playerItems.getInt("helmet").takeIf { it >= 0 }?.let { slot ->
                 val item = player.inventory.helmet
                 inventory.setItem(slot, item)
-                cachedHelmet = item?.clone() // Сохраняем копию
+                cachedHelmet = item?.clone()
             }
             playerItems.getInt("chestplate").takeIf { it >= 0 }?.let { slot ->
                 val item = player.inventory.chestplate
@@ -140,6 +202,8 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
         // Обновление предметов из gui.items
         for (key in itemsSection.getKeys(false)) {
+            if (key.contains("-")) continue
+
             val slot = key.toIntOrNull() ?: continue
 
             val shouldUpdate = itemsSection.getBoolean("$key.update", true)
@@ -202,7 +266,6 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
             updatedItems[slot] = item
         }
 
-        // Обновление слотов брони и рук
         if (target.isOnline) {
             val player = target.player ?: return updatedItems
             val playerItems = plugin.config.getConfigurationSection("gui.player_items") ?: return updatedItems
@@ -254,10 +317,11 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
         return updatedItems
     }
 
-    // Метод для сравнения двух ItemStack
     private fun isItemEqual(item1: ItemStack?, item2: ItemStack?): Boolean {
         if (item1 == null && item2 == null) return true
         if (item1 == null || item2 == null) return false
+        if (item1.type != item2.type) return false
+        if (item1.amount != item2.amount) return false // Добавляем проверку количества
         return item1.isSimilar(item2)
     }
 }

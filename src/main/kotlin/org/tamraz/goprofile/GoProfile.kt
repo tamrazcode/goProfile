@@ -24,6 +24,9 @@ class GoProfile : JavaPlugin(), Listener {
     lateinit var messages: YamlConfiguration
         private set
 
+    lateinit var statusConfig: YamlConfiguration
+        private set
+
     private val activeProfiles = mutableMapOf<org.bukkit.entity.Player, ProfileGUI>()
     private val notifiedAdmins = mutableSetOf<org.bukkit.entity.Player>()
     private var latestVersion: String? = null
@@ -32,6 +35,7 @@ class GoProfile : JavaPlugin(), Listener {
     override fun onEnable() {
         saveDefaultConfig()
         saveDefaultMessages()
+        saveDefaultStatusConfig() // Добавляем генерацию status.yml
         database = Database(this)
 
         val profilePluginCommand = GoProfileCommand(this)
@@ -51,14 +55,14 @@ class GoProfile : JavaPlugin(), Listener {
             checkForUpdates()
         }
 
-        logger.info("goProfile successfully started!")
+        logger.info("goProfile успешно запущен!")
     }
 
     override fun onDisable() {
         database.close()
         activeProfiles.clear()
         notifiedAdmins.clear()
-        logger.info("goProfile disabled!")
+        logger.info("goProfile отключен!")
     }
 
     @EventHandler
@@ -96,7 +100,13 @@ class GoProfile : JavaPlugin(), Listener {
                             return
                         }
 
-                        val body = response.body?.string() ?: return
+                        val body = response.body?.string()
+                        if (body == null) {
+                            logger.warning("Failed to check for updates: Response body is null")
+                            versionCheckFailed = true
+                            return
+                        }
+
                         val json = JSONObject(body)
                         latestVersion = json.getString("tag_name").trimStart('v')
                         logger.info("Latest version on GitHub: $latestVersion")
@@ -168,7 +178,6 @@ class GoProfile : JavaPlugin(), Listener {
     }
 
     private fun saveDefaultMessages() {
-        // Генерируем оба файла локализации
         val messagesEnFile = File(dataFolder, "messages_en.yml")
         val messagesRuFile = File(dataFolder, "messages_ru.yml")
 
@@ -179,19 +188,30 @@ class GoProfile : JavaPlugin(), Listener {
             saveResource("messages_ru.yml", false)
         }
 
-        // Загружаем только нужный файл в messages
         val language = config.getString("language", "en_us")
         val messagesFileName = if (language == "ru_ru") "messages_ru.yml" else "messages_en.yml"
         val messagesFile = File(dataFolder, messagesFileName)
         messages = YamlConfiguration.loadConfiguration(messagesFile)
     }
 
+    private fun saveDefaultStatusConfig() {
+        val statusFile = File(dataFolder, "status.yml")
+        if (!statusFile.exists()) {
+            saveResource("status.yml", false)
+        }
+        statusConfig = YamlConfiguration.loadConfiguration(statusFile)
+    }
+
     fun reloadMessages() {
-        // Перезагружаем только нужный файл
         val language = config.getString("language", "en_us")
         val messagesFileName = if (language == "ru_ru") "messages_ru.yml" else "messages_en.yml"
         val messagesFile = File(dataFolder, messagesFileName)
         messages = YamlConfiguration.loadConfiguration(messagesFile)
+    }
+
+    fun reloadStatusConfig() {
+        val statusFile = File(dataFolder, "status.yml")
+        statusConfig = YamlConfiguration.loadConfiguration(statusFile)
     }
 
     fun getMessage(key: String, player: org.bukkit.OfflinePlayer? = null, vararg args: Any): String {
