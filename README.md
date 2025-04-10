@@ -1,10 +1,11 @@
 # goProfile
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/tamrazcode/goProfile?color=blue&style=flat-square)
-![GitHub license](https://img.shields.io/github/license/tamrazcode/goProfile?style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/tamrazcode/goProfile?style=flat-square)
 
-**goProfile** is a lightweight and feature-rich Minecraft plugin for Paper/Spigot servers that allows players to view profiles, set likes/dislikes, and customize their status. Perfect for enhancing the social experience on your server!
+![фрейм 43](https://github.com/user-attachments/assets/dcb6d3d0-7b4e-4756-aa3f-b4eb90a609fa)
+
+**goProfile** is a lightweight and feature-rich Minecraft plugin for **1.20-1.21** or above Paper/Spigot servers that allows players to view profiles, set likes/dislikes, customize their status and add any placeholders you want. Perfect for enhancing the social experience on your server!
 
 ---
 
@@ -40,7 +41,7 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 
 ## 🔧 Requirements
 
-- **Server**: Paper/Spigot 1.21 (or higher).
+- **Server**: Paper/Spigot 1.20-1.21 (or higher).
 - **Optional**: [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) for placeholder support.
 
 ---
@@ -67,6 +68,7 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 | `%profile_like%`    | Number of likes.          |
 | `%profile_dislike%` | Number of dislikes.       |
 | `%profile_status%`  | Player's current status.  |
+|          And any Placeholders you want          |
 
 ---
 
@@ -74,7 +76,7 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 
 1. **View a Profile**:
     - Use `/goprofile profile` to view your own profile, or `/goprofile profile <player>` to view someone else's.
-    - The GUI shows playtime, rank, likes, dislikes, status, and more by default (Fully customizable).
+    - The GUI shows any information you want via Placeholders and likes, dislikes, status, and more by default (Fully customizable).
 
 2. **Set a Status**:
     - Use `/goprofile profile status online` to set a preset status.
