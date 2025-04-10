@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.tamraz"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
@@ -24,11 +24,10 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.github.MatrixCreations:MatrixColorAPI:v1.0.7")
-    // Зависимость для LuckPerms API
     compileOnly("net.luckperms:api:5.4")
-
-    // Зависимость для PlaceholderAPI
     compileOnly("me.clip:placeholderapi:2.11.6")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.json:json:20231013")
 }
 
 tasks {

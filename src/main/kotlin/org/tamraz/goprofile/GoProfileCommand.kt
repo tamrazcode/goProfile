@@ -33,7 +33,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 }
                 plugin.reloadConfig()
                 plugin.reloadMessages()
-                sender.sendMessage("§aКонфигурация и сообщения перезагружены!")
+                sender.sendMessage(plugin.getMessage("reload.success"))
             }
 
             "profile" -> {
