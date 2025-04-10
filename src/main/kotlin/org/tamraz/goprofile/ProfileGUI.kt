@@ -13,6 +13,14 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
     private lateinit var inventory: org.bukkit.inventory.Inventory
 
+    // Кэш для предметов брони и рук
+    private var cachedHelmet: ItemStack? = null
+    private var cachedChestplate: ItemStack? = null
+    private var cachedLeggings: ItemStack? = null
+    private var cachedBoots: ItemStack? = null
+    private var cachedMainHand: ItemStack? = null
+    private var cachedOffHand: ItemStack? = null
+
     private fun createInventory() {
         val holder = ProfileInventoryHolder(target)
         val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "&eПрофиль %player_name%")!!
@@ -29,6 +37,7 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
     }
 
     private fun loadItems() {
+        // Оставляем без изменений
         val itemsSection = plugin.config.getConfigurationSection("gui.items") ?: return
         for (key in itemsSection.getKeys(false)) {
             val slot = key.toIntOrNull() ?: continue
@@ -86,13 +95,35 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
         if (target.isOnline) {
             val player = target.player ?: return
             val playerItems = plugin.config.getConfigurationSection("gui.player_items") ?: return
-            playerItems.getInt("helmet").takeIf { it >= 0 }?.let { inventory.setItem(it, player.inventory.helmet) }
-            playerItems.getInt("chestplate").takeIf { it >= 0 }?.let { inventory.setItem(it, player.inventory.chestplate) }
-            playerItems.getInt("leggings").takeIf { it >= 0 }?.let { inventory.setItem(it, player.inventory.leggings) }
-            playerItems.getInt("boots").takeIf { it >= 0 }?.let { inventory.setItem(it, player.inventory.boots) }
-            playerItems.getInt("main_hand").takeIf { it >= 0 }?.let { inventory.setItem(it, player.inventory.itemInMainHand) }
-            playerItems.getInt("off_hand").takeIf { it >= 0 }?.let {
-                inventory.setItem(it, player.inventory.itemInOffHand)
+            playerItems.getInt("helmet").takeIf { it >= 0 }?.let { slot ->
+                val item = player.inventory.helmet
+                inventory.setItem(slot, item)
+                cachedHelmet = item?.clone() // Сохраняем копию
+            }
+            playerItems.getInt("chestplate").takeIf { it >= 0 }?.let { slot ->
+                val item = player.inventory.chestplate
+                inventory.setItem(slot, item)
+                cachedChestplate = item?.clone()
+            }
+            playerItems.getInt("leggings").takeIf { it >= 0 }?.let { slot ->
+                val item = player.inventory.leggings
+                inventory.setItem(slot, item)
+                cachedLeggings = item?.clone()
+            }
+            playerItems.getInt("boots").takeIf { it >= 0 }?.let { slot ->
+                val item = player.inventory.boots
+                inventory.setItem(slot, item)
+                cachedBoots = item?.clone()
+            }
+            playerItems.getInt("main_hand").takeIf { it >= 0 }?.let { slot ->
+                val item = player.inventory.itemInMainHand
+                inventory.setItem(slot, item)
+                cachedMainHand = item?.clone()
+            }
+            playerItems.getInt("off_hand").takeIf { it >= 0 }?.let { slot ->
+                val item = player.inventory.itemInOffHand
+                inventory.setItem(slot, item)
+                cachedOffHand = item?.clone()
             }
         }
     }
@@ -103,19 +134,17 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
         plugin.addActiveProfile(player, this)
     }
 
-    // Метод для получения обновлённых предметов с указанием их слотов
     fun getUpdatedItems(): Map<Int, ItemStack> {
         val updatedItems = mutableMapOf<Int, ItemStack>()
         val itemsSection = plugin.config.getConfigurationSection("gui.items") ?: return updatedItems
 
+        // Обновление предметов из gui.items
         for (key in itemsSection.getKeys(false)) {
             val slot = key.toIntOrNull() ?: continue
 
-            // Проверяем параметр update (по умолчанию true)
             val shouldUpdate = itemsSection.getBoolean("$key.update", true)
             if (!shouldUpdate) continue
 
-            // Обновляем только предметы, которые содержат любые плейсхолдеры
             val displayName = itemsSection.getString("$key.display_name") ?: ""
             val lore = itemsSection.getStringList("$key.lore")
             val placeholderPattern = Regex("%[^%]+%")
@@ -173,6 +202,62 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
             updatedItems[slot] = item
         }
 
+        // Обновление слотов брони и рук
+        if (target.isOnline) {
+            val player = target.player ?: return updatedItems
+            val playerItems = plugin.config.getConfigurationSection("gui.player_items") ?: return updatedItems
+
+            playerItems.getInt("helmet").takeIf { it >= 0 }?.let { slot ->
+                val currentItem = player.inventory.helmet
+                if (!isItemEqual(currentItem, cachedHelmet)) {
+                    updatedItems[slot] = currentItem ?: ItemStack(Material.AIR)
+                    cachedHelmet = currentItem?.clone()
+                }
+            }
+            playerItems.getInt("chestplate").takeIf { it >= 0 }?.let { slot ->
+                val currentItem = player.inventory.chestplate
+                if (!isItemEqual(currentItem, cachedChestplate)) {
+                    updatedItems[slot] = currentItem ?: ItemStack(Material.AIR)
+                    cachedChestplate = currentItem?.clone()
+                }
+            }
+            playerItems.getInt("leggings").takeIf { it >= 0 }?.let { slot ->
+                val currentItem = player.inventory.leggings
+                if (!isItemEqual(currentItem, cachedLeggings)) {
+                    updatedItems[slot] = currentItem ?: ItemStack(Material.AIR)
+                    cachedLeggings = currentItem?.clone()
+                }
+            }
+            playerItems.getInt("boots").takeIf { it >= 0 }?.let { slot ->
+                val currentItem = player.inventory.boots
+                if (!isItemEqual(currentItem, cachedBoots)) {
+                    updatedItems[slot] = currentItem ?: ItemStack(Material.AIR)
+                    cachedBoots = currentItem?.clone()
+                }
+            }
+            playerItems.getInt("main_hand").takeIf { it >= 0 }?.let { slot ->
+                val currentItem = player.inventory.itemInMainHand
+                if (!isItemEqual(currentItem, cachedMainHand)) {
+                    updatedItems[slot] = currentItem ?: ItemStack(Material.AIR)
+                    cachedMainHand = currentItem?.clone()
+                }
+            }
+            playerItems.getInt("off_hand").takeIf { it >= 0 }?.let { slot ->
+                val currentItem = player.inventory.itemInOffHand
+                if (!isItemEqual(currentItem, cachedOffHand)) {
+                    updatedItems[slot] = currentItem ?: ItemStack(Material.AIR)
+                    cachedOffHand = currentItem?.clone()
+                }
+            }
+        }
+
         return updatedItems
+    }
+
+    // Метод для сравнения двух ItemStack
+    private fun isItemEqual(item1: ItemStack?, item2: ItemStack?): Boolean {
+        if (item1 == null && item2 == null) return true
+        if (item1 == null || item2 == null) return false
+        return item1.isSimilar(item2)
     }
 }

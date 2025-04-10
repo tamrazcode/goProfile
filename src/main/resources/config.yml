@@ -6,7 +6,7 @@
 #  |___/
 
 
-language: "ru_ru"
+language: "en_us"
 
 default_title: "&eПрофиль %player_name%"
 
