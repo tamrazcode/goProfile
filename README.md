@@ -25,7 +25,7 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 - **Remove Ratings**: Undo likes/dislikes with `/goprofile unlike <player>` and `/goprofile undislike <player>`.
 - **Custom Statuses**: Set a status with `/goprofile profile status <identifier> | set <text> | clear`.
 - **Admin Tools**: Reset ratings or set custom profile titles with admin commands (Targeted for use by Nexo or ItemsAdder).
-- **HEX Color Support**: Use &#000000 to display correctly
+- **HEX Color Support**: Use `&#000000` to display correctly.
 - **PlaceholderAPI Support**: Use placeholders like `%profile_like%`, `%profile_dislike%`, and `%profile_status%`.
 - **Multilingual**: Supports English (`en_us`) and Russian (`ru_ru`) languages or any other (Edit `messages_en.yml`).
 
