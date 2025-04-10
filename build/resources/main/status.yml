@@ -1,9 +1,0 @@
-statuses:
-  online:
-    display: "&aOnline"
-  busy:
-    display: "&cBusy"
-  afk:
-    display: "&7AFK"
-  looking_for_team:
-    display: "&eLook for team!"
