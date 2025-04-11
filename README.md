@@ -13,6 +13,8 @@
 
 I'm fairly new to creating Minecraft plugins, but at some point, I needed a plugin with similar functionality and couldn't find a good one in the open-source community, so I decided to make my own. I hope you enjoy using **goProfile**! ❤️
 
+I want you to know that the plugin was probably written **unprofessionally**, although I will continue to update it, **use it as it is**. Or **you can fork it** and add as many features as your heart desires - welcome to **GitHub**.
+
 I also inform you that Grok AI was used to create the plugin - thank you bro.
 
 ---
