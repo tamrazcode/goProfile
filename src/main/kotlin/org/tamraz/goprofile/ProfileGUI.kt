@@ -22,9 +22,9 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
     private fun createInventory() {
         val holder = ProfileInventoryHolder(target)
-        val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "&eProfile of %player_name%")!!
+        val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "<yellow>Profile of <player_name>")!!
         val titleWithPlaceholders = plugin.setPlaceholders(target, rawTitle)
-        val title = plugin.translateColors(titleWithPlaceholders)
+        val title = plugin.parseMiniMessage(titleWithPlaceholders)
         inventory = Bukkit.createInventory(
             holder,
             plugin.config.getInt("gui.size"),
@@ -54,16 +54,13 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
                 itemsSection.getString("$key.display_name")?.let {
                     val withPlaceholders = plugin.setPlaceholders(target, it)
-                    val translated = plugin.translateColors(withPlaceholders)
-                    val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
-                    meta.setDisplayName(finalDisplayName)
+                    meta.displayName(plugin.parseMiniMessage(withPlaceholders))
                 }
                 itemsSection.getStringList("$key.lore").map {
                     val withPlaceholders = plugin.setPlaceholders(target, it)
-                    val translated = plugin.translateColors(withPlaceholders)
-                    if (translated.startsWith("§")) translated else "§r$translated"
+                    plugin.parseMiniMessage(withPlaceholders)
                 }.let {
-                    if (it.isNotEmpty()) meta.lore = it
+                    if (it.isNotEmpty()) meta.lore(it)
                 }
 
                 if (material == Material.PLAYER_HEAD && itemsSection.getString("$key.head_owner") != null) {
@@ -111,16 +108,13 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
             itemsSection.getString("$key.display_name")?.let {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                val translated = plugin.translateColors(withPlaceholders)
-                val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
-                meta.setDisplayName(finalDisplayName)
+                meta.displayName(plugin.parseMiniMessage(withPlaceholders))
             }
             itemsSection.getStringList("$key.lore").map {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                val translated = plugin.translateColors(withPlaceholders)
-                if (translated.startsWith("§")) translated else "§r$translated"
+                plugin.parseMiniMessage(withPlaceholders)
             }.let {
-                if (it.isNotEmpty()) meta.lore = it
+                if (it.isNotEmpty()) meta.lore(it)
             }
 
             if (material == Material.PLAYER_HEAD && itemsSection.getString("$key.head_owner") != null) {
@@ -224,16 +218,13 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
 
             itemsSection.getString("$key.display_name")?.let {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                val translated = plugin.translateColors(withPlaceholders)
-                val finalDisplayName = if (translated.startsWith("§")) translated else "§r$translated"
-                meta.setDisplayName(finalDisplayName)
+                meta.displayName(plugin.parseMiniMessage(withPlaceholders))
             }
             itemsSection.getStringList("$key.lore").map {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                val translated = plugin.translateColors(withPlaceholders)
-                if (translated.startsWith("§")) translated else "§r$translated"
+                plugin.parseMiniMessage(withPlaceholders)
             }.let {
-                if (it.isNotEmpty()) meta.lore = it
+                if (it.isNotEmpty()) meta.lore(it)
             }
 
             if (material == Material.PLAYER_HEAD && itemsSection.getString("$key.head_owner") != null) {

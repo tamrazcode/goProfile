@@ -4,6 +4,7 @@ import org.bukkit.OfflinePlayer
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLException
 
 class Database(private val plugin: GoProfile) {
 
@@ -26,8 +27,6 @@ class Database(private val plugin: GoProfile) {
                 CREATE TABLE IF NOT EXISTS profiles (
                     uuid TEXT PRIMARY KEY,
                     title TEXT,
-                    likes INTEGER DEFAULT 0,
-                    dislikes INTEGER DEFAULT 0,
                     status TEXT DEFAULT NULL
                 )
             """.trimIndent())
@@ -36,7 +35,7 @@ class Database(private val plugin: GoProfile) {
                 CREATE TABLE IF NOT EXISTS ratings (
                     rater_uuid TEXT,
                     target_uuid TEXT,
-                    rating TEXT, -- 'LIKE' или 'DISLIKE'
+                    rating_type TEXT, -- 'LIKE' или 'DISLIKE'
                     PRIMARY KEY (rater_uuid, target_uuid)
                 )
             """.trimIndent())
@@ -44,169 +43,171 @@ class Database(private val plugin: GoProfile) {
     }
 
     fun setTitle(player: OfflinePlayer, title: String) {
-        connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, ?, COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
+        try {
+            val statement = connection.prepareStatement(
+                "INSERT OR REPLACE INTO profiles (uuid, title, status) VALUES (?, ?, COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))"
+            )
             statement.setString(1, player.uniqueId.toString())
             statement.setString(2, title)
             statement.setString(3, player.uniqueId.toString())
-            statement.setString(4, player.uniqueId.toString())
-            statement.setString(5, player.uniqueId.toString())
             statement.executeUpdate()
+            statement.close()
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to set title for ${player.uniqueId}: ${e.message}")
         }
     }
 
     fun getTitle(player: OfflinePlayer): String? {
-        connection.prepareStatement("SELECT title FROM profiles WHERE uuid = ?").use { statement ->
+        try {
+            val statement = connection.prepareStatement("SELECT title FROM profiles WHERE uuid = ?")
             statement.setString(1, player.uniqueId.toString())
             val resultSet = statement.executeQuery()
-            return if (resultSet.next()) resultSet.getString("title") else null
+            val title = if (resultSet.next()) resultSet.getString("title") else null
+            statement.close()
+            return title
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to get title for ${player.uniqueId}: ${e.message}")
+            return null
         }
     }
 
     fun getLikes(player: OfflinePlayer): Int {
-        connection.prepareStatement("SELECT likes FROM profiles WHERE uuid = ?").use { statement ->
+        try {
+            val statement = connection.prepareStatement("SELECT COUNT(*) FROM ratings WHERE target_uuid = ? AND rating_type = 'LIKE'")
             statement.setString(1, player.uniqueId.toString())
-            val resultSet = statement.executeQuery()
-            return if (resultSet.next()) resultSet.getInt("likes") else 0
+            val result = statement.executeQuery()
+            val count = if (result.next()) result.getInt(1) else 0
+            statement.close()
+            return count
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to get likes for ${player.uniqueId}: ${e.message}")
+            return 0
         }
     }
 
     fun getDislikes(player: OfflinePlayer): Int {
-        connection.prepareStatement("SELECT dislikes FROM profiles WHERE uuid = ?").use { statement ->
+        try {
+            val statement = connection.prepareStatement("SELECT COUNT(*) FROM ratings WHERE target_uuid = ? AND rating_type = 'DISLIKE'")
             statement.setString(1, player.uniqueId.toString())
-            val resultSet = statement.executeQuery()
-            return if (resultSet.next()) resultSet.getInt("dislikes") else 0
+            val result = statement.executeQuery()
+            val count = if (result.next()) result.getInt(1) else 0
+            statement.close()
+            return count
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to get dislikes for ${player.uniqueId}: ${e.message}")
+            return 0
         }
     }
 
-    fun setRating(rater: OfflinePlayer, target: OfflinePlayer, rating: String): Boolean {
-        connection.prepareStatement("SELECT rating FROM ratings WHERE rater_uuid = ? AND target_uuid = ?").use { statement ->
-            statement.setString(1, rater.uniqueId.toString())
-            statement.setString(2, target.uniqueId.toString())
-            val resultSet = statement.executeQuery()
+    fun setRating(rater: OfflinePlayer, target: OfflinePlayer, ratingType: String): Boolean {
+        try {
+            val checkStatement = connection.prepareStatement(
+                "SELECT rating_type FROM ratings WHERE rater_uuid = ? AND target_uuid = ?"
+            )
+            checkStatement.setString(1, rater.uniqueId.toString())
+            checkStatement.setString(2, target.uniqueId.toString())
+            val resultSet = checkStatement.executeQuery()
             if (resultSet.next()) {
+                checkStatement.close()
                 return false
             }
-        }
+            checkStatement.close()
 
-        connection.prepareStatement("INSERT INTO ratings (rater_uuid, target_uuid, rating) VALUES (?, ?, ?)").use { statement ->
-            statement.setString(1, rater.uniqueId.toString())
-            statement.setString(2, target.uniqueId.toString())
-            statement.setString(3, rating)
-            statement.executeUpdate()
+            val insertStatement = connection.prepareStatement(
+                "INSERT INTO ratings (rater_uuid, target_uuid, rating_type) VALUES (?, ?, ?)"
+            )
+            insertStatement.setString(1, rater.uniqueId.toString())
+            insertStatement.setString(2, target.uniqueId.toString())
+            insertStatement.setString(3, ratingType)
+            insertStatement.executeUpdate()
+            insertStatement.close()
+            return true
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to set $ratingType for ${rater.uniqueId} on ${target.uniqueId}: ${e.message}")
+            return false
         }
-
-        if (rating == "LIKE") {
-            connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0) + 1, COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
-                statement.setString(1, target.uniqueId.toString())
-                statement.setString(2, target.uniqueId.toString())
-                statement.setString(3, target.uniqueId.toString())
-                statement.setString(4, target.uniqueId.toString())
-                statement.setString(5, target.uniqueId.toString())
-                statement.executeUpdate()
-            }
-        } else if (rating == "DISLIKE") {
-            connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0) + 1, COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
-                statement.setString(1, target.uniqueId.toString())
-                statement.setString(2, target.uniqueId.toString())
-                statement.setString(3, target.uniqueId.toString())
-                statement.setString(4, target.uniqueId.toString())
-                statement.setString(5, target.uniqueId.toString())
-                statement.executeUpdate()
-            }
-        }
-
-        return true
     }
 
-    fun removeRating(rater: OfflinePlayer, target: OfflinePlayer, rating: String): Boolean {
-        connection.prepareStatement("SELECT rating FROM ratings WHERE rater_uuid = ? AND target_uuid = ? AND rating = ?").use { statement ->
-            statement.setString(1, rater.uniqueId.toString())
-            statement.setString(2, target.uniqueId.toString())
-            statement.setString(3, rating)
-            val resultSet = statement.executeQuery()
+    fun removeRating(rater: OfflinePlayer, target: OfflinePlayer, ratingType: String): Boolean {
+        try {
+            val checkStatement = connection.prepareStatement(
+                "SELECT rating_type FROM ratings WHERE rater_uuid = ? AND target_uuid = ? AND rating_type = ?"
+            )
+            checkStatement.setString(1, rater.uniqueId.toString())
+            checkStatement.setString(2, target.uniqueId.toString())
+            checkStatement.setString(3, ratingType)
+            val resultSet = checkStatement.executeQuery()
             if (!resultSet.next()) {
+                checkStatement.close()
                 return false
             }
-        }
+            checkStatement.close()
 
-        connection.prepareStatement("DELETE FROM ratings WHERE rater_uuid = ? AND target_uuid = ? AND rating = ?").use { statement ->
-            statement.setString(1, rater.uniqueId.toString())
-            statement.setString(2, target.uniqueId.toString())
-            statement.setString(3, rating)
-            statement.executeUpdate()
+            val deleteStatement = connection.prepareStatement(
+                "DELETE FROM ratings WHERE rater_uuid = ? AND target_uuid = ? AND rating_type = ?"
+            )
+            deleteStatement.setString(1, rater.uniqueId.toString())
+            deleteStatement.setString(2, target.uniqueId.toString())
+            deleteStatement.setString(3, ratingType)
+            deleteStatement.executeUpdate()
+            deleteStatement.close()
+            return true
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to remove $ratingType for ${rater.uniqueId} on ${target.uniqueId}: ${e.message}")
+            return false
         }
-
-        if (rating == "LIKE") {
-            connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), MAX(COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0) - 1, 0), COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
-                statement.setString(1, target.uniqueId.toString())
-                statement.setString(2, target.uniqueId.toString())
-                statement.setString(3, target.uniqueId.toString())
-                statement.setString(4, target.uniqueId.toString())
-                statement.setString(5, target.uniqueId.toString())
-                statement.executeUpdate()
-            }
-        } else if (rating == "DISLIKE") {
-            connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0), MAX(COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0) - 1, 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
-                statement.setString(1, target.uniqueId.toString())
-                statement.setString(2, target.uniqueId.toString())
-                statement.setString(3, target.uniqueId.toString())
-                statement.setString(4, target.uniqueId.toString())
-                statement.setString(5, target.uniqueId.toString())
-                statement.executeUpdate()
-            }
-        }
-
-        return true
     }
 
-    fun resetRatings(target: OfflinePlayer, rating: String) {
-        connection.prepareStatement("DELETE FROM ratings WHERE target_uuid = ? AND rating = ?").use { statement ->
+    fun resetRatings(target: OfflinePlayer, ratingType: String) {
+        try {
+            val statement = connection.prepareStatement(
+                "DELETE FROM ratings WHERE target_uuid = ? AND rating_type = ?"
+            )
             statement.setString(1, target.uniqueId.toString())
-            statement.setString(2, rating)
+            statement.setString(2, ratingType)
             statement.executeUpdate()
-        }
-
-        if (rating == "LIKE") {
-            connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), 0, COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
-                statement.setString(1, target.uniqueId.toString())
-                statement.setString(2, target.uniqueId.toString())
-                statement.setString(3, target.uniqueId.toString())
-                statement.setString(4, target.uniqueId.toString())
-                statement.executeUpdate()
-            }
-        } else if (rating == "DISLIKE") {
-            connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0), 0, COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
-                statement.setString(1, target.uniqueId.toString())
-                statement.setString(2, target.uniqueId.toString())
-                statement.setString(3, target.uniqueId.toString())
-                statement.setString(4, target.uniqueId.toString())
-                statement.executeUpdate()
-            }
+            statement.close()
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to reset $ratingType ratings for ${target.uniqueId}: ${e.message}")
         }
     }
 
     fun setStatus(player: OfflinePlayer, status: String?) {
-        connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), ?)").use { statement ->
+        try {
+            val statement = connection.prepareStatement(
+                "INSERT OR REPLACE INTO profiles (uuid, title, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), ?)"
+            )
             statement.setString(1, player.uniqueId.toString())
             statement.setString(2, player.uniqueId.toString())
-            statement.setString(3, player.uniqueId.toString())
-            statement.setString(4, player.uniqueId.toString())
-            statement.setString(5, status)
+            statement.setString(3, status)
             statement.executeUpdate()
+            statement.close()
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to set status for ${player.uniqueId}: ${e.message}")
         }
     }
 
     fun getStatus(player: OfflinePlayer): String? {
-        connection.prepareStatement("SELECT status FROM profiles WHERE uuid = ?").use { statement ->
+        try {
+            val statement = connection.prepareStatement("SELECT status FROM profiles WHERE uuid = ?")
             statement.setString(1, player.uniqueId.toString())
             val resultSet = statement.executeQuery()
-            return if (resultSet.next()) resultSet.getString("status") else null
+            val status = if (resultSet.next()) resultSet.getString("status") else null
+            statement.close()
+            return status
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to get status for ${player.uniqueId}: ${e.message}")
+            return null
         }
     }
 
     fun close() {
-        if (::connection.isInitialized) {
-            connection.close()
+        try {
+            if (!connection.isClosed) {
+                connection.close()
+            }
+        } catch (e: SQLException) {
+            plugin.logger.severe("Failed to close database connection: ${e.message}")
         }
     }
 }

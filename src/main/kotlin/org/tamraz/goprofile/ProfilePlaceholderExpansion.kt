@@ -37,9 +37,9 @@ class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderEx
                 val rawStatus = plugin.database.getStatus(player) ?: return "None"
                 val statusDisplay = statusConfig.getString("statuses.$rawStatus.display")
                 if (statusDisplay != null) {
-                    plugin.translateColors(statusDisplay)
+                    plugin.parseMiniMessage(statusDisplay).toString()
                 } else {
-                    plugin.translateColors(rawStatus)
+                    plugin.parseMiniMessage(rawStatus).toString()
                 }
             }
             else -> null

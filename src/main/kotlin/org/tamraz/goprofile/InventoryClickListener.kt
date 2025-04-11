@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.NamespacedKey
 import org.bukkit.event.player.PlayerQuitEvent
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 
 class InventoryClickListener(private val plugin: GoProfile) : Listener {
 
@@ -56,7 +57,11 @@ class InventoryClickListener(private val plugin: GoProfile) : Listener {
 
             if (currentTime - lastUsed < cooldownSeconds) {
                 val remaining = cooldownSeconds - (currentTime - lastUsed)
-                player.sendMessage(plugin.getMessage("inventory.cooldown", player, remaining))
+                player.sendMessage(plugin.getMessage(
+                    "inventory.cooldown",
+                    player,
+                    Placeholder.parsed("remaining", remaining.toString())
+                ))
                 return
             }
 

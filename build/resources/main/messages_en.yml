@@ -1,49 +1,49 @@
 plugin:
-  usage: "&cUsage: /goprofile <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
+  usage: "<red>Usage: /goprofile <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
 
 profile:
-  not-player: "&cThis command is only for players!"
-  player-not-found: "&cPlayer %s not found!"
+  not-player: "<red>This command is only for players!"
+  player-not-found: "<red>Player <player_name> not found!"
   status:
-    usage: "&cUsage: /goprofile profile status <identifier> | set <text> | clear"
-    set-usage: "&cUsage: /goprofile profile status set <text>"
-    too-long: "&cStatus cannot be longer than 32 characters!"
-    invalid-id: "&cStatus with identifier %s not found!"
-    set-success: "&aYour status has been set to: %s"
-    cleared: "&aYour status has been cleared!"
+    usage: "<red>Usage: /goprofile profile status <identifier> | set <text> | clear"
+    set-usage: "<red>Usage: /goprofile profile status set <text>"
+    too-long: "<red>Status cannot be longer than 32 characters!"
+    invalid-id: "<red>Status with identifier <status_id> not found!"
+    set-success: "<green>Your status has been set to: <status>"
+    cleared: "<green>Your status has been cleared!"
 
 setprofiletitle:
-  no-permission: "&cYou do not have permission to use this command!"
-  usage: "&cUsage: /goprofile setprofiletitle <player> <title>"
-  player-not-found: "&cPlayer %s not found!"
-  success: "&aProfile title for player %s has been set to: %s"
+  no-permission: "<red>You do not have permission to use this command!"
+  usage: "<red>Usage: /goprofile setprofiletitle <player> <title>"
+  player-not-found: "<red>Player <player_name> not found!"
+  success: "<green>Profile title for player <player_name> has been set to: <title>"
 
 inventory:
-  cooldown: "&cPlease wait %d more seconds before using this again!"
+  cooldown: "<red>Please wait <remaining> more seconds before using this again!"
 
 like:
-  usage: "&cUsage: /goprofile like <player>"
-  self: "&cYou cannot like yourself!"
-  already-rated: "&cYou have already rated player %s!"
-  success: "&aYou have liked player %s!"
+  usage: "<red>Usage: /goprofile like <player>"
+  self: "<red>You cannot like yourself!"
+  already-rated: "<red>You have already rated player <player_name>!"
+  success: "<green>You have liked player <player_name>!"
 
 dislike:
-  usage: "&cUsage: /goprofile dislike <player>"
-  self: "&cYou cannot dislike yourself!"
-  already-rated: "&cYou have already rated player %s!"
-  success: "&cYou have disliked player %s!"
+  usage: "<red>Usage: /goprofile dislike <player>"
+  self: "<red>You cannot dislike yourself!"
+  already-rated: "<red>You have already rated player <player_name>!"
+  success: "<red>You have disliked player <player_name>!"
 
 unlike:
-  usage: "&cUsage: /goprofile unlike [admin] <player>"
-  not-rated: "&cYou have not liked player %s!"
-  success: "&aYou have removed your like from player %s!"
-  admin-success: "&aAll likes for player %s have been reset!"
+  usage: "<red>Usage: /goprofile unlike [admin] <player>"
+  not-rated: "<red>You have not liked player <player_name>!"
+  success: "<green>You have removed your like from player <player_name>!"
+  admin-success: "<green>All likes for player <player_name> have been reset!"
 
 undislike:
-  usage: "&cUsage: /goprofile undislike [admin] <player>"
-  not-rated: "&cYou have not disliked player %s!"
-  success: "&cYou have removed your dislike from player %s!"
-  admin-success: "&cAll dislikes for player %s have been reset!"
+  usage: "<red>Usage: /goprofile undislike [admin] <player>"
+  not-rated: "<red>You have not disliked player <player_name>!"
+  success: "<red>You have removed your dislike from player <player_name>!"
+  admin-success: "<red>All dislikes for player <player_name> have been reset!"
 
 reload:
-  success: "&aConfiguration and messages reloaded!"
+  success: "<green>Configuration and messages reloaded!"

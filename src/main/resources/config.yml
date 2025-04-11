@@ -8,7 +8,7 @@
 language: "ru_ru"
 version-check: true
 
-default_title: "&eProfile of %player_name%"
+default_title: "<yellow>Профиль игрока <player_name>"
 
 gui:
   size: 54
@@ -21,54 +21,53 @@ gui:
     13:
       material: PLAYER_HEAD
       head_owner: "%player_name%"
-      display_name: "%player_name%"
+      display_name: "<player_name>"
       lore:
-        - "&#E2ADFDPlaytime: &f%cmi_user_playtime_hoursf% &7hours"
-        - "&#ACD45BRank: &7%luckperms_prefix%"
-        - "&#ACD45BNickname: &7%flectonepulse_player%"
+        - "<gradient:#E2ADFD:#FFFFFF>Время игры: <white>%cmi_user_playtime_hoursf% <gray>часов"
+        - "<gradient:#ACD45B:#FFFFFF>Ранг: <gray>%luckperms_prefix%"
       update: true
     23:
       material: REDSTONE
-      display_name: "&cDislike"
+      display_name: "<red>Дизлайк"
       lore:
-        - "&7Click to dislike!"
+        - "<gray>Нажмите, чтобы поставить дизлайк!"
       command: "[player] goprofile dislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
     22:
       material: STONE
-      display_name: "&eInfo"
+      display_name: "<yellow>Информация"
       lore:
-        - "&7Health: &c%player_health%"
-        - "&aLikes: &f%profile_like%"
-        - "&cDislikes: &f%profile_dislike%"
-        - "&eStatus: &f%profile_status%"
-        - "&7Blocks Mined: %statistic_mine_block%"
+        - "<gray>Здоровье: <red>%player_health%"
+        - "<green>Лайки: <white>%profile_like%"
+        - "<red>Дизлайки: <white>%profile_dislike%"
+        - "<yellow>Статус: <white>%profile_status%"
+        - "<gray>Блоков добыто: %statistic_mine_block%"
       update: true
     21:
       material: EMERALD
-      display_name: "&aLike"
+      display_name: "<green>Лайк"
       lore:
-        - "&7Click to like!"
+        - "<gray>Нажмите, чтобы поставить лайк!"
       command: "[player] goprofile like {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
     30:
       material: EMERALD_BLOCK
-      display_name: "&aRemove Like"
+      display_name: "<green>Убрать лайк"
       lore:
-        - "&7Click to remove your like!"
+        - "<gray>Нажмите, чтобы убрать ваш лайк!"
       command: "[player] goprofile unlike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
     32:
       material: REDSTONE_BLOCK
-      display_name: "&cRemove Dislike"
+      display_name: "<red>Убрать дизлайк"
       lore:
-        - "&7Click to remove your dislike!"
+        - "<gray>Нажмите, чтобы убрать ваш дизлайк!"
       command: "[player] goprofile undislike {player}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
@@ -76,18 +75,18 @@ gui:
 
     45:
       material: ARROW
-      display_name: "&eOpen Menu"
+      display_name: "<yellow>Открыть меню"
       lore:
-        - "&7Click to open the menu!"
+        - "<gray>Нажмите, чтобы открыть меню!"
       command: "[console] dm open menu {player}"
       cooldown: 5
       sound: "ENTITY_ITEM_PICKUP"
       update: false
     53:
       material: BARRIER
-      display_name: "&cClose"
+      display_name: "<red>Закрыть"
       lore:
-        - "&7Click to close the profile!"
+        - "<gray>Нажмите, чтобы закрыть профиль!"
       close: true
       sound: "BLOCK_NOTE_BLOCK_PLING"
       update: false

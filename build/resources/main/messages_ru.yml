@@ -1,49 +1,49 @@
 plugin:
-  usage: "&cИспользование: /goprofile <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
+  usage: "<red>Использование: /goprofile <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
 
 profile:
-  not-player: "&cЭта команда только для игроков!"
-  player-not-found: "&cИгрок %s не найден!"
+  not-player: "<red>Эта команда только для игроков!"
+  player-not-found: "<red>Игрок <player_name> не найден!"
   status:
-    usage: "&cИспользование: /goprofile profile status <идентификатор> | set <текст> | clear"
-    set-usage: "&cИспользование: /goprofile profile status set <текст>"
-    too-long: "&cСтатус не может быть длиннее 32 символов!"
-    invalid-id: "&cСтатус с идентификатором %s не найден!"
-    set-success: "&aВаш статус установлен: %s"
-    cleared: "&aВаш статус очищен!"
+    usage: "<red>Использование: /goprofile profile status <идентификатор> | set <текст> | clear"
+    set-usage: "<red>Использование: /goprofile profile status set <текст>"
+    too-long: "<red>Статус не может быть длиннее 32 символов!"
+    invalid-id: "<red>Статус с идентификатором <status_id> не найден!"
+    set-success: "<green>Ваш статус установлен: <status>"
+    cleared: "<green>Ваш статус очищен!"
 
 setprofiletitle:
-  no-permission: "&cУ вас нет прав для выполнения этой команды!"
-  usage: "&cИспользование: /goprofile setprofiletitle <игрок> <заголовок>"
-  player-not-found: "&cИгрок %s не найден!"
-  success: "&aЗаголовок профиля игрока %s успешно установлен на: %s"
+  no-permission: "<red>У вас нет прав для выполнения этой команды!"
+  usage: "<red>Использование: /goprofile setprofiletitle <игрок> <заголовок>"
+  player-not-found: "<red>Игрок <player_name> не найден!"
+  success: "<green>Заголовок профиля игрока <player_name> успешно установлен на: <title>"
 
 inventory:
-  cooldown: "&cПодождите еще %d секунд перед повторным использованием!"
+  cooldown: "<red>Подождите еще <remaining> секунд перед повторным использованием!"
 
 like:
-  usage: "&cИспользование: /goprofile like <игрок>"
-  self: "&cВы не можете поставить лайк самому себе!"
-  already-rated: "&cВы уже поставили оценку игроку %s!"
-  success: "&aВы поставили лайк игроку %s!"
+  usage: "<red>Использование: /goprofile like <игрок>"
+  self: "<red>Вы не можете поставить лайк самому себе!"
+  already-rated: "<red>Вы уже поставили оценку игроку <player_name>!"
+  success: "<green>Вы поставили лайк игроку <player_name>!"
 
 dislike:
-  usage: "&cИспользование: /goprofile dislike <игрок>"
-  self: "&cВы не можете поставить дизлайк самому себе!"
-  already-rated: "&cВы уже поставили оценку игроку %s!"
-  success: "&cВы поставили дизлайк игроку %s!"
+  usage: "<red>Использование: /goprofile dislike <игрок>"
+  self: "<red>Вы не можете поставить дизлайк самому себе!"
+  already-rated: "<red>Вы уже поставили оценку игроку <player_name>!"
+  success: "<red>Вы поставили дизлайк игроку <player_name>!"
 
 unlike:
-  usage: "&cИспользование: /goprofile unlike [admin] <игрок>"
-  not-rated: "&cВы не ставили лайк игроку %s!"
-  success: "&aВы убрали свой лайк у игрока %s!"
-  admin-success: "&aВсе лайки игрока %s были сброшены!"
+  usage: "<red>Использование: /goprofile unlike [admin] <игрок>"
+  not-rated: "<red>Вы не ставили лайк игроку <player_name>!"
+  success: "<green>Вы убрали свой лайк у игрока <player_name>!"
+  admin-success: "<green>Все лайки игрока <player_name> были сброшены!"
 
 undislike:
-  usage: "&cИспользование: /goprofile undislike [admin] <игрок>"
-  not-rated: "&cВы не ставили дизлайк игроку %s!"
-  success: "&cВы убрали свой дизлайк у игрока %s!"
-  admin-success: "&cВсе дизлайки игрока %s были сброшены!"
+  usage: "<red>Использование: /goprofile undislike [admin] <игрок>"
+  not-rated: "<red>Вы не ставили дизлайк игроку <player_name>!"
+  success: "<red>Вы убрали свой дизлайк у игрока <player_name>!"
+  admin-success: "<red>Все дизлайки игрока <player_name> были сброшены!"
 
 reload:
-  success: "&aКонфигурация и сообщения перезагружены!"
+  success: "<green>Конфигурация и сообщения перезагружены!"

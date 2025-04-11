@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 
 class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabCompleter {
 
@@ -58,7 +59,11 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                                     return true
                                 }
                                 plugin.database.setStatus(sender, statusText)
-                                sender.sendMessage(plugin.getMessage("profile.status.set-success", sender, statusText))
+                                sender.sendMessage(plugin.getMessage(
+                                    "profile.status.set-success",
+                                    sender,
+                                    Placeholder.parsed("status", statusText)
+                                ))
                             }
                             "clear" -> {
                                 plugin.database.setStatus(sender, null)
@@ -68,11 +73,19 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                                 val statusId = args[2].lowercase()
                                 val statusDisplay = plugin.statusConfig.getString("statuses.$statusId.display")
                                 if (statusDisplay == null) {
-                                    sender.sendMessage(plugin.getMessage("profile.status.invalid-id", sender, statusId))
+                                    sender.sendMessage(plugin.getMessage(
+                                        "profile.status.invalid-id",
+                                        sender,
+                                        Placeholder.parsed("status_id", statusId)
+                                    ))
                                     return true
                                 }
                                 plugin.database.setStatus(sender, statusId)
-                                sender.sendMessage(plugin.getMessage("profile.status.set-success", sender, plugin.translateColors(statusDisplay)))
+                                sender.sendMessage(plugin.getMessage(
+                                    "profile.status.set-success",
+                                    sender,
+                                    Placeholder.parsed("status", statusDisplay)
+                                ))
                             }
                         }
                     }
@@ -86,7 +99,11 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                             if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
                                 offlinePlayer
                             } else {
-                                sender.sendMessage(plugin.getMessage("profile.player-not-found", sender, targetName))
+                                sender.sendMessage(plugin.getMessage(
+                                    "profile.player-not-found",
+                                    sender,
+                                    Placeholder.parsed("player_name", targetName)
+                                ))
                                 return true
                             }
                         }
@@ -117,14 +134,23 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                     if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
                         offlinePlayer
                     } else {
-                        sender.sendMessage(plugin.getMessage("setprofiletitle.player-not-found", null, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "setprofiletitle.player-not-found",
+                            null,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                         return true
                     }
                 }
 
                 val title = args.drop(2).joinToString(" ")
                 plugin.database.setTitle(target, title)
-                sender.sendMessage(plugin.getMessage("setprofiletitle.success", null, targetName, title))
+                sender.sendMessage(plugin.getMessage(
+                    "setprofiletitle.success",
+                    null,
+                    Placeholder.parsed("player_name", targetName),
+                    Placeholder.parsed("title", title)
+                ))
             }
 
             "like" -> {
@@ -147,7 +173,11 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                     if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
                         offlinePlayer
                     } else {
-                        sender.sendMessage(plugin.getMessage("profile.player-not-found", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "profile.player-not-found",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                         return true
                     }
                 }
@@ -159,9 +189,17 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
 
                 val success = plugin.database.setRating(sender, target, "LIKE")
                 if (success) {
-                    sender.sendMessage(plugin.getMessage("like.success", sender, targetName))
+                    sender.sendMessage(plugin.getMessage(
+                        "like.success",
+                        sender,
+                        Placeholder.parsed("player_name", targetName)
+                    ))
                 } else {
-                    sender.sendMessage(plugin.getMessage("like.already-rated", sender, targetName))
+                    sender.sendMessage(plugin.getMessage(
+                        "like.already-rated",
+                        sender,
+                        Placeholder.parsed("player_name", targetName)
+                    ))
                 }
             }
 
@@ -185,7 +223,11 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                     if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
                         offlinePlayer
                     } else {
-                        sender.sendMessage(plugin.getMessage("profile.player-not-found", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "profile.player-not-found",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                         return true
                     }
                 }
@@ -197,9 +239,17 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
 
                 val success = plugin.database.setRating(sender, target, "DISLIKE")
                 if (success) {
-                    sender.sendMessage(plugin.getMessage("dislike.success", sender, targetName))
+                    sender.sendMessage(plugin.getMessage(
+                        "dislike.success",
+                        sender,
+                        Placeholder.parsed("player_name", targetName)
+                    ))
                 } else {
-                    sender.sendMessage(plugin.getMessage("dislike.already-rated", sender, targetName))
+                    sender.sendMessage(plugin.getMessage(
+                        "dislike.already-rated",
+                        sender,
+                        Placeholder.parsed("player_name", targetName)
+                    ))
                 }
             }
 
@@ -229,21 +279,37 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                     if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
                         offlinePlayer
                     } else {
-                        sender.sendMessage(plugin.getMessage("profile.player-not-found", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "profile.player-not-found",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                         return true
                     }
                 }
 
                 if (isAdminCommand) {
                     plugin.database.resetRatings(target, "LIKE")
-                    sender.sendMessage(plugin.getMessage("unlike.admin-success", null, targetName))
+                    sender.sendMessage(plugin.getMessage(
+                        "unlike.admin-success",
+                        null,
+                        Placeholder.parsed("player_name", targetName)
+                    ))
                 } else {
                     val senderPlayer = sender as Player
                     val success = plugin.database.removeRating(senderPlayer, target, "LIKE")
                     if (success) {
-                        sender.sendMessage(plugin.getMessage("unlike.success", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "unlike.success",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                     } else {
-                        sender.sendMessage(plugin.getMessage("unlike.not-rated", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "unlike.not-rated",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                     }
                 }
             }
@@ -274,21 +340,37 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                     if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
                         offlinePlayer
                     } else {
-                        sender.sendMessage(plugin.getMessage("profile.player-not-found", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "profile.player-not-found",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                         return true
                     }
                 }
 
                 if (isAdminCommand) {
                     plugin.database.resetRatings(target, "DISLIKE")
-                    sender.sendMessage(plugin.getMessage("undislike.admin-success", null, targetName))
+                    sender.sendMessage(plugin.getMessage(
+                        "undislike.admin-success",
+                        null,
+                        Placeholder.parsed("player_name", targetName)
+                    ))
                 } else {
                     val senderPlayer = sender as Player
                     val success = plugin.database.removeRating(senderPlayer, target, "DISLIKE")
                     if (success) {
-                        sender.sendMessage(plugin.getMessage("undislike.success", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "undislike.success",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                     } else {
-                        sender.sendMessage(plugin.getMessage("undislike.not-rated", sender, targetName))
+                        sender.sendMessage(plugin.getMessage(
+                            "undislike.not-rated",
+                            sender,
+                            Placeholder.parsed("player_name", targetName)
+                        ))
                     }
                 }
             }
