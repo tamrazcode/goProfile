@@ -35,13 +35,10 @@ class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderEx
             "dislike" -> plugin.database.getDislikes(player).toString()
             "status" -> {
                 val rawStatus = plugin.database.getStatus(player) ?: return "None"
-                // Проверяем, является ли статус идентификатором готового статуса
                 val statusDisplay = statusConfig.getString("statuses.$rawStatus.display")
                 if (statusDisplay != null) {
-                    // Если это готовый статус, возвращаем его отображаемый текст
                     plugin.translateColors(statusDisplay)
                 } else {
-                    // Если это кастомный статус, возвращаем его как есть
                     plugin.translateColors(rawStatus)
                 }
             }

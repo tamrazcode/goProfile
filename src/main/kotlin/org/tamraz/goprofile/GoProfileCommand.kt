@@ -23,7 +23,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 }
                 plugin.reloadConfig()
                 plugin.reloadMessages()
-                plugin.reloadStatusConfig() // Добавляем перезагрузку status.yml
+                plugin.reloadStatusConfig()
                 sender.sendMessage(plugin.getMessage("reload.success"))
             }
 
@@ -34,7 +34,6 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 }
 
                 if (args.size == 1) {
-                    // Открываем профиль самого игрока
                     val gui = ProfileGUI(plugin, sender)
                     gui.open(sender)
                     return true
@@ -66,7 +65,6 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                                 sender.sendMessage(plugin.getMessage("profile.status.cleared"))
                             }
                             else -> {
-                                // Проверяем, является ли аргумент идентификатором готового статуса
                                 val statusId = args[2].lowercase()
                                 val statusDisplay = plugin.statusConfig.getString("statuses.$statusId.display")
                                 if (statusDisplay == null) {
@@ -79,7 +77,6 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                         }
                     }
                     else -> {
-                        // Открываем профиль другого игрока
                         val targetName = args[1]
                         val onlinePlayer = Bukkit.getPlayerExact(targetName)
                         val target = if (onlinePlayer != null) {

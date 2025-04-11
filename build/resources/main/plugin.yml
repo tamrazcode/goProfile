@@ -3,16 +3,18 @@ version: 1.1
 main: org.tamraz.goprofile.GoProfile
 api-version: 1.20
 softdepend: [PlaceholderAPI]
+
 commands:
   goprofile:
-    description: Main command for goprofile
+    description: Main command for goProfile
     usage: /<command> <subcommand>
     aliases: []
     permission: goprofile.use
+
 permissions:
   goprofile.use:
     description: Allows usage of goprofile commands
     default: true
-  goprofile.admin:
+  profileplugin.admin:
     description: Access to admin commands of the plugin
     default: op

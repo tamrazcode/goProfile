@@ -36,7 +36,7 @@ class InventoryClickListener(private val plugin: GoProfile) : Listener {
                 val sound = Sound.valueOf(soundName)
                 player.playSound(player.location, sound, 1.0f, 1.0f)
             } catch (e: IllegalArgumentException) {
-                plugin.logger.warning("Неверный звук: $soundName")
+                plugin.logger.warning("Incorrect sound: $soundName")
             }
         }
 

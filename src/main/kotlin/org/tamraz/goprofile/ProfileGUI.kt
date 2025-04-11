@@ -200,7 +200,6 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
         val updatedItems = mutableMapOf<Int, ItemStack>()
         val itemsSection = plugin.config.getConfigurationSection("gui.items") ?: return updatedItems
 
-        // Обновление предметов из gui.items
         for (key in itemsSection.getKeys(false)) {
             if (key.contains("-")) continue
 
@@ -321,7 +320,7 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
         if (item1 == null && item2 == null) return true
         if (item1 == null || item2 == null) return false
         if (item1.type != item2.type) return false
-        if (item1.amount != item2.amount) return false // Добавляем проверку количества
+        if (item1.amount != item2.amount) return false
         return item1.isSimilar(item2)
     }
 }

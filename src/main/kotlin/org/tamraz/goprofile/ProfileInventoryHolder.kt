@@ -11,7 +11,6 @@ class ProfileInventoryHolder(private val target: OfflinePlayer? = null) : Invent
         return inventory
     }
 
-    // Метод для установки инвентаря (вызывается автоматически Bukkit)
     fun setInventory(inventory: Inventory) {
         this.inventory = inventory
     }

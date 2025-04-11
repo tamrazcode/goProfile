@@ -22,7 +22,6 @@ class Database(private val plugin: GoProfile) {
 
         connection = DriverManager.getConnection("jdbc:sqlite:${dbFile.absolutePath}")
         connection.createStatement().use { statement ->
-            // Таблица для профилей (добавляем колонку status)
             statement.execute("""
                 CREATE TABLE IF NOT EXISTS profiles (
                     uuid TEXT PRIMARY KEY,
@@ -33,7 +32,6 @@ class Database(private val plugin: GoProfile) {
                 )
             """.trimIndent())
 
-            // Таблица для отслеживания, кто кому поставил лайк/дизлайк
             statement.execute("""
                 CREATE TABLE IF NOT EXISTS ratings (
                     rater_uuid TEXT,
@@ -81,18 +79,15 @@ class Database(private val plugin: GoProfile) {
     }
 
     fun setRating(rater: OfflinePlayer, target: OfflinePlayer, rating: String): Boolean {
-        // Проверяем, ставил ли rater уже оценку target
         connection.prepareStatement("SELECT rating FROM ratings WHERE rater_uuid = ? AND target_uuid = ?").use { statement ->
             statement.setString(1, rater.uniqueId.toString())
             statement.setString(2, target.uniqueId.toString())
             val resultSet = statement.executeQuery()
             if (resultSet.next()) {
-                // Игрок уже ставил оценку
                 return false
             }
         }
 
-        // Добавляем запись в таблицу ratings
         connection.prepareStatement("INSERT INTO ratings (rater_uuid, target_uuid, rating) VALUES (?, ?, ?)").use { statement ->
             statement.setString(1, rater.uniqueId.toString())
             statement.setString(2, target.uniqueId.toString())
@@ -100,7 +95,6 @@ class Database(private val plugin: GoProfile) {
             statement.executeUpdate()
         }
 
-        // Обновляем количество лайков или дизлайков в таблице profiles
         if (rating == "LIKE") {
             connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0) + 1, COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
                 statement.setString(1, target.uniqueId.toString())
@@ -125,19 +119,16 @@ class Database(private val plugin: GoProfile) {
     }
 
     fun removeRating(rater: OfflinePlayer, target: OfflinePlayer, rating: String): Boolean {
-        // Проверяем, ставил ли rater указанную оценку target
         connection.prepareStatement("SELECT rating FROM ratings WHERE rater_uuid = ? AND target_uuid = ? AND rating = ?").use { statement ->
             statement.setString(1, rater.uniqueId.toString())
             statement.setString(2, target.uniqueId.toString())
             statement.setString(3, rating)
             val resultSet = statement.executeQuery()
             if (!resultSet.next()) {
-                // Игрок не ставил такую оценку
                 return false
             }
         }
 
-        // Удаляем запись из таблицы ratings
         connection.prepareStatement("DELETE FROM ratings WHERE rater_uuid = ? AND target_uuid = ? AND rating = ?").use { statement ->
             statement.setString(1, rater.uniqueId.toString())
             statement.setString(2, target.uniqueId.toString())
@@ -145,7 +136,6 @@ class Database(private val plugin: GoProfile) {
             statement.executeUpdate()
         }
 
-        // Уменьшаем количество лайков или дизлайков в таблице profiles
         if (rating == "LIKE") {
             connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), MAX(COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0) - 1, 0), COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
                 statement.setString(1, target.uniqueId.toString())
@@ -170,14 +160,12 @@ class Database(private val plugin: GoProfile) {
     }
 
     fun resetRatings(target: OfflinePlayer, rating: String) {
-        // Удаляем все записи из таблицы ratings для указанного типа оценки
         connection.prepareStatement("DELETE FROM ratings WHERE target_uuid = ? AND rating = ?").use { statement ->
             statement.setString(1, target.uniqueId.toString())
             statement.setString(2, rating)
             statement.executeUpdate()
         }
 
-        // Сбрасываем количество лайков или дизлайков в таблице profiles
         if (rating == "LIKE") {
             connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), 0, COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT status FROM profiles WHERE uuid = ?), NULL))").use { statement ->
                 statement.setString(1, target.uniqueId.toString())
@@ -197,7 +185,6 @@ class Database(private val plugin: GoProfile) {
         }
     }
 
-    // Установка статуса (готового или кастомного)
     fun setStatus(player: OfflinePlayer, status: String?) {
         connection.prepareStatement("INSERT OR REPLACE INTO profiles (uuid, title, likes, dislikes, status) VALUES (?, COALESCE((SELECT title FROM profiles WHERE uuid = ?), NULL), COALESCE((SELECT likes FROM profiles WHERE uuid = ?), 0), COALESCE((SELECT dislikes FROM profiles WHERE uuid = ?), 0), ?)").use { statement ->
             statement.setString(1, player.uniqueId.toString())
@@ -209,7 +196,6 @@ class Database(private val plugin: GoProfile) {
         }
     }
 
-    // Получение статуса игрока
     fun getStatus(player: OfflinePlayer): String? {
         connection.prepareStatement("SELECT status FROM profiles WHERE uuid = ?").use { statement ->
             statement.setString(1, player.uniqueId.toString())

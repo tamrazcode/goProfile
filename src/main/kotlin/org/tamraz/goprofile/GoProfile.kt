@@ -55,14 +55,14 @@ class GoProfile : JavaPlugin(), Listener {
             checkForUpdates()
         }
 
-        logger.info("goProfile успешно запущен!")
+        logger.info("goProfile successfully started!")
     }
 
     override fun onDisable() {
         database.close()
         activeProfiles.clear()
         notifiedAdmins.clear()
-        logger.info("goProfile отключен!")
+        logger.info("goProfile disabled!")
     }
 
     @EventHandler
