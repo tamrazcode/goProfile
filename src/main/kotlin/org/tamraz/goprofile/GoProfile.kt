@@ -1,22 +1,24 @@
 package org.tamraz.goprofile
 
-import org.bukkit.Bukkit
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.configuration.file.YamlConfiguration
-import java.io.File
-import org.bukkit.scheduler.BukkitRunnable
 import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import org.json.JSONObject
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 class GoProfile : JavaPlugin(), Listener {
@@ -36,6 +38,11 @@ class GoProfile : JavaPlugin(), Listener {
     private var versionCheckFailed: Boolean = false
 
     private val miniMessage = MiniMessage.miniMessage()
+
+    private val legacySerializer = LegacyComponentSerializer.builder()
+        .character('§')
+        .hexColors()
+        .build()
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -73,20 +80,23 @@ class GoProfile : JavaPlugin(), Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
+        database.assignPlayerId(player)
+
         if (!player.hasPermission("goprofile.admin")) return
         if (notifiedAdmins.contains(player)) return
 
         if (versionCheckFailed || latestVersion == null || latestVersion == description.version) return
 
         if (isVersionOutdated(description.version, latestVersion!!)) {
-            player.sendMessage(parseMiniMessage(
+            val plugin = this
+            player.sendMessage(plugin.componentToLegacyString(plugin.parseMiniMessage(
                 "<yellow>[goProfile] <red>A new version <white><latest_version> <red>is available! You are using <white><current_version><red>.",
                 Placeholder.parsed("latest_version", latestVersion!!),
                 Placeholder.parsed("current_version", description.version)
-            ))
-            player.sendMessage(parseMiniMessage(
+            )))
+            player.sendMessage(plugin.componentToLegacyString(plugin.parseMiniMessage(
                 "<yellow>[goProfile] <red>Download it from: <white><click:open_url:'https://github.com/tamrazcode/goprofile/releases'>https://github.com/tamrazcode/goprofile/releases</click>"
-            ))
+            )))
             notifiedAdmins.add(player)
         }
     }
@@ -232,25 +242,24 @@ class GoProfile : JavaPlugin(), Listener {
     }
 
     fun parseMiniMessage(text: String, vararg resolvers: TagResolver): Component {
-        // Сначала преобразуем устаревшие форматы (HEX и & коды) в MiniMessage
         val processedText = preprocessLegacyColors(text)
-        // Добавляем <i:false> в начало, чтобы отключить курсив по умолчанию
         val finalText = "<i:false>$processedText"
-        // Парсим с помощью MiniMessage
         return miniMessage.deserialize(finalText, *resolvers)
+    }
+
+    fun componentToLegacyString(component: Component): String {
+        return legacySerializer.serialize(component)
     }
 
     private fun preprocessLegacyColors(text: String): String {
         var result = text
 
-        // Преобразуем HEX-коды (например, &#E2ADFD) в MiniMessage формат <color:#E2ADFD>
         val hexPattern = Regex("&#([A-Fa-f0-9]{6})")
         result = hexPattern.replace(result) { match ->
             val hex = match.groupValues[1]
             "<color:#$hex>"
         }
 
-        // Преобразуем обычные цветовые коды & в MiniMessage теги
         result = result.replace("&0", "<black>")
             .replace("&1", "<dark_blue>")
             .replace("&2", "<dark_green>")
@@ -275,5 +284,9 @@ class GoProfile : JavaPlugin(), Listener {
             .replace("&r", "<reset>")
 
         return result
+    }
+
+    fun getPlayerById(id: Int): OfflinePlayer? {
+        return database.getPlayerById(id)
     }
 }

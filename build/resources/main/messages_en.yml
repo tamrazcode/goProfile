@@ -1,5 +1,5 @@
 plugin:
-  usage: "<red>Usage: /goprofile <profile | setprofiletitle | like | dislike | unlike | undislike | reload>"
+  usage: "<red>Usage: /goprofile <profile | setprofiletitle | like | dislike | unlike | undislike | gender | reload>"
 
 profile:
   not-player: "<red>This command is only for players!"
@@ -11,6 +11,18 @@ profile:
     invalid-id: "<red>Status with identifier <status_id> not found!"
     set-success: "<green>Your status has been set to: <status>"
     cleared: "<green>Your status has been cleared!"
+    none: "<gray>None"
+
+id:
+  none: "N/A"
+
+gender:
+  usage: "<red>Usage: /goprofile gender <male | female>"
+  invalid: "<red>Gender must be 'male' or 'female'!"
+  set-success: "<green>Your gender has been set to: <gender>"
+  none: "<gray>Not set"
+  male: "Male"
+  female: "Female"
 
 setprofiletitle:
   no-permission: "<red>You do not have permission to use this command!"

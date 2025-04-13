@@ -42,6 +42,8 @@ class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderEx
                     plugin.parseMiniMessage(rawStatus).toString()
                 }
             }
+            "id" -> plugin.database.getPlayerId(player)?.toString() ?: "N/A"
+            "gender" -> plugin.database.getGender(player) ?: "Not set"
             else -> null
         }
     }

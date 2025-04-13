@@ -114,6 +114,31 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 }
             }
 
+            "gender" -> {
+                if (sender !is Player) {
+                    sender.sendMessage(plugin.getMessage("profile.not-player"))
+                    return true
+                }
+
+                if (args.size < 2) {
+                    sender.sendMessage(plugin.getMessage("gender.usage"))
+                    return true
+                }
+
+                val gender = args[1].lowercase()
+                if (gender !in listOf("male", "female")) {
+                    sender.sendMessage(plugin.getMessage("gender.invalid"))
+                    return true
+                }
+
+                plugin.database.setGender(sender, gender)
+                sender.sendMessage(plugin.getMessage(
+                    "gender.set-success",
+                    sender,
+                    Placeholder.parsed("gender", if (gender == "male") "мужской" else "женский")
+                ))
+            }
+
             "setprofiletitle" -> {
                 if (!sender.hasPermission("profileplugin.admin")) {
                     sender.sendMessage(plugin.getMessage("setprofiletitle.no-permission"))
@@ -390,7 +415,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
         args: Array<out String>
     ): List<String> {
         if (args.size == 1) {
-            val suggestions = mutableListOf("profile", "setprofiletitle", "like", "dislike", "unlike", "undislike")
+            val suggestions = mutableListOf("profile", "setprofiletitle", "like", "dislike", "unlike", "undislike", "gender")
             if (sender.hasPermission("profileplugin.admin")) {
                 suggestions.add("reload")
             }
@@ -407,6 +432,11 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 if (args.size == 3 && args[1].equals("status", ignoreCase = true)) {
                     val statusIds = plugin.statusConfig.getConfigurationSection("statuses")?.getKeys(false) ?: emptySet<String>()
                     return listOf("set", "clear", *statusIds.toTypedArray()).filter { it.startsWith(args[2], ignoreCase = true) }
+                }
+            }
+            "gender" -> {
+                if (args.size == 2) {
+                    return listOf("male", "female").filter { it.startsWith(args[1], ignoreCase = true) }
                 }
             }
             "setprofiletitle", "like", "dislike" -> {
