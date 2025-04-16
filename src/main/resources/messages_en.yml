@@ -11,18 +11,11 @@ profile:
     invalid-id: "<red>Status with identifier <status_id> not found!"
     set-success: "<green>Your status has been set to: <status>"
     cleared: "<green>Your status has been cleared!"
-    none: "<gray>None"
-
-id:
-  none: "N/A"
 
 gender:
   usage: "<red>Usage: /goprofile gender <male | female>"
   invalid: "<red>Gender must be 'male' or 'female'!"
   set-success: "<green>Your gender has been set to: <gender>"
-  none: "<gray>Not set"
-  male: "Male"
-  female: "Female"
 
 setprofiletitle:
   no-permission: "<red>You do not have permission to use this command!"
@@ -59,3 +52,13 @@ undislike:
 
 reload:
   success: "<green>Configuration and messages reloaded!"
+
+placeholder:
+  status:
+    none: "<gray>None"
+  id:
+    none: "<gray>N/A"
+  gender:
+    none: "<gray>Not set"
+    male: "<white>Male"
+    female: "<white>Female"

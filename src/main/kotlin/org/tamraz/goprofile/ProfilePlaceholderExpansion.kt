@@ -4,6 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderExpansion() {
 
@@ -14,6 +15,11 @@ class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderEx
         }
         YamlConfiguration.loadConfiguration(statusFile)
     }
+
+    private val legacySerializer = LegacyComponentSerializer.builder()
+        .character('§')
+        .hexColors()
+        .build()
 
     override fun getIdentifier(): String {
         return "profile"
@@ -34,16 +40,35 @@ class ProfilePlaceholderExpansion(private val plugin: GoProfile) : PlaceholderEx
             "like" -> plugin.database.getLikes(player).toString()
             "dislike" -> plugin.database.getDislikes(player).toString()
             "status" -> {
-                val rawStatus = plugin.database.getStatus(player) ?: return "None"
-                val statusDisplay = statusConfig.getString("statuses.$rawStatus.display")
-                if (statusDisplay != null) {
-                    plugin.parseMiniMessage(statusDisplay).toString()
+                val rawStatus = plugin.database.getStatus(player)
+                if (rawStatus == null) {
+                    legacySerializer.serialize(plugin.getMessage("placeholder.status.none", player))
                 } else {
-                    plugin.parseMiniMessage(rawStatus).toString()
+                    val statusDisplay = statusConfig.getString("statuses.$rawStatus.display")
+                    if (statusDisplay != null) {
+                        legacySerializer.serialize(plugin.parseMiniMessage(statusDisplay))
+                    } else {
+                        legacySerializer.serialize(plugin.parseMiniMessage(rawStatus))
+                    }
                 }
             }
-            "id" -> plugin.database.getPlayerId(player)?.toString() ?: "N/A"
-            "gender" -> plugin.database.getGender(player) ?: "Not set"
+            "id" -> {
+                val playerId = plugin.database.getPlayerId(player)
+                if (playerId == null) {
+                    legacySerializer.serialize(plugin.getMessage("placeholder.id.none", player))
+                } else {
+                    playerId.toString()
+                }
+            }
+            "gender" -> {
+                val gender = plugin.database.getGender(player)
+                if (gender == null) {
+                    legacySerializer.serialize(plugin.getMessage("placeholder.gender.none", player))
+                } else {
+                    val genderDisplayKey = "placeholder.gender.$gender"
+                    legacySerializer.serialize(plugin.getMessage(genderDisplayKey, player))
+                }
+            }
             else -> null
         }
     }

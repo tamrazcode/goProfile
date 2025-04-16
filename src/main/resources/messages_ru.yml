@@ -11,18 +11,11 @@ profile:
     invalid-id: "<red>Статус с идентификатором <status_id> не найден!"
     set-success: "<green>Ваш статус установлен: <status>"
     cleared: "<green>Ваш статус очищен!"
-    none: "<gray>Нет"
-
-id:
-  none: "Н/Д"
 
 gender:
   usage: "<red>Использование: /goprofile gender <male | female>"
   invalid: "<red>Пол должен быть 'male' или 'female'!"
   set-success: "<green>Ваш пол установлен: <gender>"
-  none: "<gray>Не указан"
-  male: "Мужской"
-  female: "Женский"
 
 setprofiletitle:
   no-permission: "<red>У вас нет прав для выполнения этой команды!"
@@ -59,3 +52,13 @@ undislike:
 
 reload:
   success: "<green>Конфигурация и сообщения перезагружены!"
+
+placeholder:
+  status:
+    none: "<gray>Нет"
+  id:
+    none: "<gray>Н/Д"
+  gender:
+    none: "<gray>Не указан"
+    male: "<white>Мужской"
+    female: "<white>Женский"

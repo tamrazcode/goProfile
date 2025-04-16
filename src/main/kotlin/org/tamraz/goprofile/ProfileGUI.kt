@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.NamespacedKey
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer // Добавляем импорт
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer // Добавляем импорт
 
 class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlayer) {
 
@@ -20,11 +22,18 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
     private var cachedMainHand: ItemStack? = null
     private var cachedOffHand: ItemStack? = null
 
+    private val plainSerializer = PlainTextComponentSerializer.plainText()
+    private val legacySerializer = LegacyComponentSerializer.builder()
+        .character('§')
+        .hexColors()
+        .build()
+
     private fun createInventory() {
         val holder = ProfileInventoryHolder(target)
         val rawTitle = plugin.database.getTitle(target) ?: plugin.config.getString("default_title", "<yellow>Profile of <player_name>")!!
         val titleWithPlaceholders = plugin.setPlaceholders(target, rawTitle)
-        val title = plugin.parseMiniMessage(titleWithPlaceholders)
+        val titleComponent = plugin.parseMiniMessage(titleWithPlaceholders)
+        val title = plugin.componentToLegacyString(titleComponent) // Используем Legacy-коды для заголовка
         inventory = Bukkit.createInventory(
             holder,
             plugin.config.getInt("gui.size"),
@@ -58,7 +67,11 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
                 }
                 itemsSection.getStringList("$key.lore").map {
                     val withPlaceholders = plugin.setPlaceholders(target, it)
-                    plugin.parseMiniMessage(withPlaceholders)
+                    // Извлекаем чистый текст из строки с Legacy-кодами
+                    val componentWithPlaceholders = legacySerializer.deserialize(withPlaceholders)
+                    val plainText = plainSerializer.serialize(componentWithPlaceholders)
+                    // Парсим заново через MiniMessage
+                    plugin.parseMiniMessage(plainText)
                 }.let {
                     if (it.isNotEmpty()) meta.lore(it)
                 }
@@ -112,7 +125,11 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
             }
             itemsSection.getStringList("$key.lore").map {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                plugin.parseMiniMessage(withPlaceholders)
+                // Извлекаем чистый текст из строки с Legacy-кодами
+                val componentWithPlaceholders = legacySerializer.deserialize(withPlaceholders)
+                val plainText = plainSerializer.serialize(componentWithPlaceholders)
+                // Парсим заново через MiniMessage
+                plugin.parseMiniMessage(plainText)
             }.let {
                 if (it.isNotEmpty()) meta.lore(it)
             }
@@ -222,7 +239,11 @@ class ProfileGUI(private val plugin: GoProfile, private val target: OfflinePlaye
             }
             itemsSection.getStringList("$key.lore").map {
                 val withPlaceholders = plugin.setPlaceholders(target, it)
-                plugin.parseMiniMessage(withPlaceholders)
+                // Извлекаем чистый текст из строки с Legacy-кодами
+                val componentWithPlaceholders = legacySerializer.deserialize(withPlaceholders)
+                val plainText = plainSerializer.serialize(componentWithPlaceholders)
+                // Парсим заново через MiniMessage
+                plugin.parseMiniMessage(plainText)
             }.let {
                 if (it.isNotEmpty()) meta.lore(it)
             }

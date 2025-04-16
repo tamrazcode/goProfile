@@ -254,34 +254,40 @@ class GoProfile : JavaPlugin(), Listener {
     private fun preprocessLegacyColors(text: String): String {
         var result = text
 
-        val hexPattern = Regex("&#([A-Fa-f0-9]{6})")
+        val hexPattern = Regex("[&§]#([A-Fa-f0-9]{6})")
         result = hexPattern.replace(result) { match ->
             val hex = match.groupValues[1]
             "<color:#$hex>"
         }
 
-        result = result.replace("&0", "<black>")
-            .replace("&1", "<dark_blue>")
-            .replace("&2", "<dark_green>")
-            .replace("&3", "<dark_aqua>")
-            .replace("&4", "<dark_red>")
-            .replace("&5", "<dark_purple>")
-            .replace("&6", "<gold>")
-            .replace("&7", "<gray>")
-            .replace("&8", "<dark_gray>")
-            .replace("&9", "<blue>")
-            .replace("&a", "<green>")
-            .replace("&b", "<aqua>")
-            .replace("&c", "<red>")
-            .replace("&d", "<light_purple>")
-            .replace("&e", "<yellow>")
-            .replace("&f", "<white>")
-            .replace("&k", "<obfuscated>")
-            .replace("&l", "<bold>")
-            .replace("&m", "<strikethrough>")
-            .replace("&n", "<underline>")
-            .replace("&o", "<italic>")
-            .replace("&r", "<reset>")
+        val legacyPattern = Regex("[&§]([0-9a-fklmnor])")
+        result = legacyPattern.replace(result) { match ->
+            when (match.groupValues[1]) {
+                "0" -> "<black>"
+                "1" -> "<dark_blue>"
+                "2" -> "<dark_green>"
+                "3" -> "<dark_aqua>"
+                "4" -> "<dark_red>"
+                "5" -> "<dark_purple>"
+                "6" -> "<gold>"
+                "7" -> "<gray>"
+                "8" -> "<dark_gray>"
+                "9" -> "<blue>"
+                "a" -> "<green>"
+                "b" -> "<aqua>"
+                "c" -> "<red>"
+                "d" -> "<light_purple>"
+                "e" -> "<yellow>"
+                "f" -> "<white>"
+                "k" -> "<obfuscated>"
+                "l" -> "<bold>"
+                "m" -> "<strikethrough>"
+                "n" -> "<underline>"
+                "o" -> "<italic>"
+                "r" -> "<reset>"
+                else -> ""
+            }
+        }
 
         return result
     }
