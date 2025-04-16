@@ -54,6 +54,7 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 | Command                                    | Description                                      | Permission         |
 |--------------------------------------------|--------------------------------------------------|--------------------|
 | `/goprofile profile [player]`              | Open a player's profile.                         | `goprofile.use`    |
+| `/goprofile gender male \| female`         | Choose a gender.                                 | `goprofile.use`    |
 | `/goprofile like <player>`                 | Like a player.                                   | `goprofile.use`    |
 | `/goprofile dislike <player>`              | Dislike a player.                                | `goprofile.use`    |
 | `/goprofile unlike [admin] <player>`       | Remove your like (or all likes if `admin`).      | `goprofile.use` / `goprofile.admin` |
