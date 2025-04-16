@@ -20,10 +20,13 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 ## ✨ Features
 
 - **Fully Customizable GUI**: Configure the profile GUI to fit your server's style.
+- **Real-time Updated Profile**: All information and equipment slots are updated in real time.
 - **Player Profiles**: View detailed player profiles with `/goprofile profile [player]`.
 - **Likes & Dislikes**: Players can like or dislike others with `/goprofile like <player>` and `/goprofile dislike <player>`.
 - **Remove Ratings**: Undo likes/dislikes with `/goprofile unlike <player>` and `/goprofile undislike <player>`.
 - **Custom Statuses**: Set a status with `/goprofile profile status <identifier> | set <text> | clear`.
+- **Gender Select**: You can select the gender in the profile or `/goprofile gender male | female`.
+- **Unique Static ID`s**: Each player is assigned a unique static ID.
 - **Admin Tools**: Reset ratings or set custom profile titles with admin commands (Targeted for use by Nexo or ItemsAdder).
 - **PlaceholderAPI Support**: Use placeholders like `%profile_like%`, `%profile_dislike%`, and `%profile_status%`.
 - **Multilingual**: Supports English (`en_us`) and Russian (`ru_ru`) languages or any other (Edit `messages_en.yml`).
