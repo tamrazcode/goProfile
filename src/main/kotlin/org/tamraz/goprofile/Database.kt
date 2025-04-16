@@ -25,7 +25,6 @@ class Database(private val plugin: GoProfile) {
 
         connection = DriverManager.getConnection("jdbc:sqlite:${dbFile.absolutePath}")
         connection.createStatement().use { statement ->
-            // Таблица для профилей
             statement.execute("""
                 CREATE TABLE IF NOT EXISTS profiles (
                     uuid TEXT PRIMARY KEY,
@@ -35,7 +34,6 @@ class Database(private val plugin: GoProfile) {
                 )
             """.trimIndent())
 
-            // Таблица для рейтингов
             statement.execute("""
                 CREATE TABLE IF NOT EXISTS ratings (
                     rater_uuid TEXT,
@@ -45,7 +43,6 @@ class Database(private val plugin: GoProfile) {
                 )
             """.trimIndent())
 
-            // Новая таблица для ID игроков
             statement.execute("""
                 CREATE TABLE IF NOT EXISTS player_ids (
                     uuid TEXT PRIMARY KEY,
@@ -55,7 +52,6 @@ class Database(private val plugin: GoProfile) {
         }
     }
 
-    // Метод для получения следующего доступного ID
     private fun getNextAvailableId(): Int {
         try {
             val statement = connection.createStatement()
@@ -65,14 +61,12 @@ class Database(private val plugin: GoProfile) {
             return maxId + 1
         } catch (e: SQLException) {
             plugin.logger.severe("Failed to get next available ID: ${e.message}")
-            return 1 // В случае ошибки начинаем с 1
+            return 1
         }
     }
 
-    // Метод для присвоения ID игроку
     fun assignPlayerId(player: OfflinePlayer): Int {
         try {
-            // Проверяем, есть ли уже ID у игрока
             val checkStatement = connection.prepareStatement("SELECT id FROM player_ids WHERE uuid = ?")
             checkStatement.setString(1, player.uniqueId.toString())
             val resultSet = checkStatement.executeQuery()
@@ -83,7 +77,6 @@ class Database(private val plugin: GoProfile) {
             }
             checkStatement.close()
 
-            // Если ID нет, присваиваем новый
             val newId = getNextAvailableId()
             val insertStatement = connection.prepareStatement("INSERT INTO player_ids (uuid, id) VALUES (?, ?)")
             insertStatement.setString(1, player.uniqueId.toString())
@@ -97,7 +90,6 @@ class Database(private val plugin: GoProfile) {
         }
     }
 
-    // Метод для получения ID игрока по UUID
     fun getPlayerId(player: OfflinePlayer): Int? {
         try {
             val statement = connection.prepareStatement("SELECT id FROM player_ids WHERE uuid = ?")
@@ -112,7 +104,6 @@ class Database(private val plugin: GoProfile) {
         }
     }
 
-    // Метод для получения игрока по ID
     fun getPlayerById(id: Int): OfflinePlayer? {
         try {
             val statement = connection.prepareStatement("SELECT uuid FROM player_ids WHERE id = ?")
@@ -292,7 +283,6 @@ class Database(private val plugin: GoProfile) {
         }
     }
 
-    // Методы для работы с полом
     fun setGender(player: OfflinePlayer, gender: String?) {
         try {
             val statement = connection.prepareStatement(

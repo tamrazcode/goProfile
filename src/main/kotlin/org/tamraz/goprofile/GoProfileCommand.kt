@@ -7,11 +7,11 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer // Добавляем импорт
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 
 class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabCompleter {
 
-    private val plainSerializer = PlainTextComponentSerializer.plainText() // Добавляем сериализатор
+    private val plainSerializer = PlainTextComponentSerializer.plainText()
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
@@ -137,7 +137,7 @@ class GoProfileCommand(private val plugin: GoProfile) : CommandExecutor, TabComp
                 plugin.database.setGender(sender, gender)
                 val genderDisplayKey = "placeholder.gender.$gender"
                 val genderComponent = plugin.getMessage(genderDisplayKey, sender)
-                val genderPlainText = plainSerializer.serialize(genderComponent) // Извлекаем чистый текст
+                val genderPlainText = plainSerializer.serialize(genderComponent)
                 sender.sendMessage(plugin.getMessage(
                     "gender.set-success",
                     sender,

@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.NamespacedKey
 import org.bukkit.event.player.PlayerQuitEvent
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 
 class InventoryClickListener(private val plugin: GoProfile) : Listener {

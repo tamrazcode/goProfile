@@ -32,7 +32,7 @@ gui:
       display_name: "<red>Дизлайк"
       lore:
         - "<gray>Нажмите, чтобы поставить дизлайк!"
-      command: "[player] goprofile dislike {target}" # Меняем {player} на {target}
+      command: "[player] goprofile dislike {target}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -53,7 +53,7 @@ gui:
       display_name: "<green>Лайк"
       lore:
         - "<gray>Нажмите, чтобы поставить лайк!"
-      command: "[player] goprofile like {target}" # Меняем {player} на {target}
+      command: "[player] goprofile like {target}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -62,7 +62,7 @@ gui:
       display_name: "<green>Убрать лайк"
       lore:
         - "<gray>Нажмите, чтобы убрать ваш лайк!"
-      command: "[player] goprofile unlike {target}" # Меняем {player} на {target}
+      command: "[player] goprofile unlike {target}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -71,7 +71,7 @@ gui:
       display_name: "<red>Убрать дизлайк"
       lore:
         - "<gray>Нажмите, чтобы убрать ваш дизлайк!"
-      command: "[player] goprofile undislike {target}" # Меняем {player} на {target}
+      command: "[player] goprofile undislike {target}"
       cooldown: 5
       sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
       update: false
@@ -81,7 +81,7 @@ gui:
       display_name: "<yellow>Открыть меню"
       lore:
         - "<gray>Нажмите, чтобы открыть меню!"
-      command: "[console] dm open menu {player}" # Оставляем {player}
+      command: "[console] dm open menu {player}"
       cooldown: 5
       sound: "ENTITY_ITEM_PICKUP"
       update: false

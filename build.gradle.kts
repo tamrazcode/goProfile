@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.tamraz"
-version = "1.2"
+version = "1.3"
 
 repositories {
     mavenCentral()
