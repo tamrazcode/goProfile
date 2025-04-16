@@ -1,9 +1,0 @@
-statuses:
-  online:
-    display: "<green>Online"
-  busy:
-    display: "<red>Busy"
-  afk:
-    display: "<gray>AFK"
-  looking_for_team:
-    display: "<yellow>Looking for team!"
