@@ -71,6 +71,8 @@ I also inform you that Grok AI was used to create the plugin - thank you bro.
 | `%profile_like%`    | Number of likes.          |
 | `%profile_dislike%` | Number of dislikes.       |
 | `%profile_status%`  | Player's current status.  |
+| `%profile_gender%`  | Current gender.           |
+| `%profile_id%`      | Player ID`s.              |
 |          And any Placeholders you want          |
 
 ---
